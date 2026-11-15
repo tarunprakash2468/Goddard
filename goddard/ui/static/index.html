@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GODDARD // 3D & Trade-Space Mission Control</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CDN Libraries: Three.js + OrbitControls + Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #080c14;
+      --bg-panel: rgba(13, 20, 36, 0.85);
+      --bg-card: rgba(22, 33, 56, 0.65);
+      --bg-card-hover: rgba(30, 45, 77, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: #00e5ff;
+      --accent-cyan: #00e5ff;
+      --accent-blue: #38bdf8;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-x: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    header {
+      background: rgba(8, 12, 20, 0.95);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #00e5ff, #3b82f6);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #080c14;
+      font-size: 16px;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title span {
+      color: var(--accent-cyan);
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--accent-green);
+    }
+
+    .status-badge.violation {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: var(--accent-amber);
+    }
+
+    .btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-cyan);
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(59, 130, 246, 0.35));
+      border: 1px solid var(--accent-cyan);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.4), rgba(59, 130, 246, 0.5));
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+    }
+
+    /* ── Main Layout Grid ────────────────────────────────── */
+    .app-main {
+      display: grid;
+      grid-template-columns: 290px 1fr 350px;
+      grid-template-rows: 1fr;
+      flex: 1;
+      height: calc(100vh - 54px - 210px);
+      overflow: hidden;
+    }
+
+    /* ── Sidebar (Timeline) ─────────────────────────────── */
+    .sidebar {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(8, 12, 20, 0.5);
+    }
+
+    .panel-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rev-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rev-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .rev-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(0, 229, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .rev-card.active {
+      background: rgba(14, 30, 56, 0.95);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.2), inset 0 0 12px rgba(0, 229, 255, 0.05);
+    }
+
+    .rev-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .rev-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rev-class {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: 4px;
+    }
+
+    .rev-specs {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .rev-tag {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* ── Center Viewport (3D Three.js) ───────────────────── */
+    .viewport-container {
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #0d1527 0%, #070a12 100%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #threejs-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .viewport-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+    }
+
+    .viewport-hud {
+      background: rgba(8, 12, 20, 0.75);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px 12px;
+      backdrop-filter: blur(10px);
+      pointer-events: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .hud-title {
+      color: var(--text-dim);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .hud-stats {
+      color: #fff;
+      display: flex;
+      gap: 12px;
+    }
+
+    .viewport-controls {
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+    }
+
+    .btn-hud {
+      background: rgba(13, 20, 36, 0.85);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      transition: all 0.15s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-hud:hover {
+      background: rgba(30, 45, 77, 0.95);
+      border-color: var(--accent-cyan);
+      color: #fff;
+    }
+
+    .btn-hud.active {
+      background: rgba(0, 229, 255, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* ── Right Panel (Requirements & Diff) ──────────────── */
+    .right-panel {
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 14px;
+      gap: 14px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .gate-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .gate-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .gate-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .gate-val {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+
+    .gate-target {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .gate-card.passed {
+      border-left: 3px solid var(--accent-green);
+    }
+
+    .gate-card.failed {
+      border-left: 3px solid var(--accent-red);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    /* Diff Table */
+    .diff-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .diff-table th {
+      background: rgba(8, 12, 20, 0.7);
+      padding: 6px 10px;
+      text-align: left;
+      color: var(--text-dim);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .diff-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .diff-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .delta-pos {
+      color: var(--accent-green);
+    }
+
+    .delta-neg {
+      color: var(--accent-red);
+    }
+
+    .delta-neu {
+      color: var(--text-dim);
+    }
+
+    /* ── Bottom Panel (Trade-Space Plots) ───────────────── */
+    .bottom-panel {
+      height: 210px;
+      background: rgba(10, 16, 28, 0.95);
+      border-top: 1px solid var(--border-subtle);
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+    }
+
+    .plots-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      flex: 1;
+      height: calc(100% - 24px);
+    }
+
+    .plot-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .plot-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .plot-canvas-wrapper {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-top: 2px solid var(--accent-cyan);
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">G</div>
+      <div>
+        <div class="brand-title">GODDARD <span>// MISSION CONTROL</span></div>
+        <div class="brand-subtitle">AUTONOMOUS MULTI-PHYSICS ROCKET DESIGN & 3D TELEMETRY</div>
+      </div>
+    </div>
+
+    <div class="header-status">
+      <div id="active-rev-badge" class="status-badge">
+        <span class="spinner"></span> LOADING TELEMETRY...
+      </div>
+      <div id="clock-display" style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+        UTC 00:00:00
+      </div>
+      <button class="btn" onclick="fetchRevisions()">
+        ↻ REFRESH
+      </button>
+      <button id="btn-download-bundle" class="btn btn-primary" onclick="downloadActiveBundle()">
+        ⬇ DOWNLOAD PACKAGE (.ZIP)
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div class="app-main">
+
+    <!-- Left: Design Lineage Sidebar -->
+    <aside class="sidebar">
+      <div class="panel-header">
+        <div class="panel-title">DESIGN LINEAGE TIMELINE</div>
+        <span id="rev-count-chip" class="status-badge" style="font-size: 10px;">0 REVS</span>
+      </div>
+      <div id="rev-list-container" class="rev-list">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </aside>
+
+    <!-- Center: Interactive 3D Viewport -->
+    <main class="viewport-container">
+      <div id="threejs-canvas"></div>
+
+      <div class="viewport-overlay">
+        <div class="viewport-hud">
+          <div class="hud-title">ACTIVE VEHICLE ENVELOPE</div>
+          <div id="hud-stats-row" class="hud-stats">
+            <div>LENGTH: <span id="hud-len" style="color:var(--accent-cyan);">-- m</span></div>
+            <div>DIAM: <span id="hud-diam" style="color:var(--accent-cyan);">-- m</span></div>
+            <div>TRIANGLES: <span id="hud-tri" style="color:var(--accent-cyan);">--</span></div>
+          </div>
+        </div>
+
+        <div class="viewport-controls">
+          <button id="btn-shading-mode" class="btn-hud" onclick="toggleShadingMode()">SHADING: SOLID</button>
+          <button id="btn-wireframe" class="btn-hud" onclick="toggleWireframe()">WIREFRAME</button>
+          <button id="btn-autorotate" class="btn-hud" onclick="toggleAutoRotate()">AUTO-ROTATE</button>
+          <button class="btn-hud" onclick="resetCamera()">RESET VIEW</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right: Requirements Matrix & Diff -->
+    <aside class="right-panel">
+      <div>
+        <div class="section-title">
+          <span>REQUIREMENT COMPLIANCE</span>
+          <span id="overall-status-pill" class="status-badge">PASS</span>
+        </div>
+        <div class="gate-grid" id="compliance-matrix">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">
+          <span>SUBSYSTEM TELEMETRY ROLLUP</span>
+        </div>
+        <div class="gate-grid" id="telemetry-rollup">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">
+          <span>PARAMETER DIFF VS PREVIOUS REV</span>
+        </div>
+        <table class="diff-table">
+          <thead>
+            <tr>
+              <th>PARAMETER</th>
+              <th>PREV</th>
+              <th>CURRENT</th>
+              <th>DELTA</th>
+            </tr>
+          </thead>
+          <tbody id="diff-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Bottom: Multi-Revision Trade-Space Exploration Plots -->
+  <footer class="bottom-panel">
+    <div class="section-title" style="margin-bottom: 6px;">
+      <span>MULTI-REVISION TRADE-SPACE CONVERGENCE</span>
+      <span style="font-size: 10px; color: var(--text-dim);">INTERACTIVE HISTORICAL DESIGN EXPLORATION</span>
+    </div>
+    <div class="plots-grid">
+      <div class="plot-card">
+        <div class="plot-title">APOGEE / ORBIT ALTITUDE (km)</div>
+        <div class="plot-canvas-wrapper">
+          <canvas id="chart-altitude"></canvas>
+        </div>
+      </div>
+
+      <div class="plot-card">
+        <div class="plot-title">STRUCTURAL MARGINS (YIELD FOS & BUCKLING BLF)</div>
+        <div class="plot-canvas-wrapper">
+          <canvas id="chart-structural"></canvas>
+        </div>
+      </div>
+
+      <div class="plot-card">
+        <div class="plot-title">MASS BREAKDOWN ROLLUP (TONS)</div>
+        <div class="plot-canvas-wrapper">
+          <canvas id="chart-mass"></canvas>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
