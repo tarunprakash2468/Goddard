@@ -1,6 +1,6 @@
 # Goddard: Multi-Physics Generative Rocket Design & CAD-to-Physics Copilot
 
-[![CI Pipeline](https://github.com/tarunprakash/Goddard/actions/workflows/ci.yml/badge.svg)](https://github.com/tarunprakash/Goddard/actions/workflows/ci.yml)
+[![CI Pipeline](https://github.com/tarunprakash2468/Goddard/actions/workflows/ci.yml/badge.svg)](https://github.com/tarunprakash2468/Goddard/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 [![MCP Protocol](https://img.shields.io/badge/MCP-FastMCP%20v1.3-orange.svg)](https://modelcontextprotocol.io/)
