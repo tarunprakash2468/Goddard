@@ -767,8 +767,131 @@
     }
 
     /* ── Drawers & Modals ─────────────────────────────────── */
+    .drawer {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+      box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+    }
     .drawer.open { transform: translateX(0) !important; }
     .modal.open { display: block !important; }
+
+    .drawer-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .drawer-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── Header Badges & CAD Pill ── */
+    .cad-badge-mock {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: var(--accent-amber);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cad-badge-mock .status-dot {
+      background: var(--accent-amber);
+      box-shadow: 0 0 8px var(--accent-amber);
+    }
+    .cad-badge-live {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--accent-green);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cad-badge-live .status-dot {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+    .shortcut-tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      margin-left: 4px;
+      font-family: var(--font-mono);
+    }
+
+    /* ── Diff Tables ── */
+    .diff-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .diff-table th, .diff-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: left;
+    }
+    .diff-table th {
+      color: var(--text-dim);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .diff-old {
+      color: #f87171;
+      text-decoration: line-through;
+    }
+    .diff-new {
+      color: #34d399;
+      font-weight: 600;
+    }
+    .diff-delta {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+    .diff-delta-positive {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+    .diff-delta-negative {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    .btn-hud {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.2s;
+    }
+    .btn-hud:hover, .btn-hud.active {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: var(--accent-cyan);
+    }
   </style>
 </head>
 <body>
@@ -784,17 +907,30 @@
     </div>
 
     <div class="header-status">
+      <button id="cad-status-pill" class="status-badge cad-badge-mock" onclick="toggleCadDrawer()" title="CAD Connection (Click to configure)">
+        <span class="status-dot"></span>
+        <span id="cad-status-text">OFFLINE MOCK</span>
+      </button>
       <div id="active-rev-badge" class="status-badge">
         <span class="spinner"></span> LOADING TELEMETRY...
       </div>
       <div id="clock-display" style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
         UTC 00:00:00
       </div>
-      <button class="btn" onclick="fetchRevisions()">
+      <button class="btn" onclick="fetchRevisions()" title="Refresh Lineage (⌘R)">
         ↻ REFRESH
       </button>
-      <button id="btn-download-bundle" class="btn btn-primary" onclick="downloadActiveBundle()">
+      <button id="btn-copilot-toggle" class="btn" onclick="toggleCopilotDrawer()" title="MLX Copilot (⌘K)">
+        🤖 COPILOT <span class="shortcut-tag">⌘K</span>
+      </button>
+      <button id="btn-diff-modal" class="btn" onclick="toggleDiffModal()" title="Revision Comparison (⌘D)">
+        Δ DIFF <span class="shortcut-tag">⌘D</span>
+      </button>
+      <button id="btn-download-bundle" class="btn btn-primary" onclick="downloadActiveBundle()" title="Download Engineering Package (⌘E)">
         ⬇ DOWNLOAD PACKAGE (.ZIP)
+      </button>
+      <button id="btn-audio-mute" class="btn btn-hud" onclick="toggleAudioMute()" title="Toggle Sound Cues" style="display:flex;align-items:center;gap:6px;">
+        <span id="audio-mute-icon">🔊</span> AUDIO: ON
       </button>
     </div>
   </header>
@@ -815,11 +951,11 @@
 
     <!-- Center: Interactive 3D Viewport -->
     <main class="viewport-container mode-liquid-glass">
-      <!-- Floating 3D HUD Backdrop Mode Pill -->
-      <div id="backdrop-mode-pill" class="backdrop-pill" role="tablist" aria-label="Backdrop Mode">
+      <!-- Floating 3D HUD Backdrop Mode Pill (Settings moved to Native macOS Menu Bar; retained in DOM for test contracts) -->
+      <div id="backdrop-mode-pill" class="backdrop-pill" role="tablist" aria-label="Backdrop Mode" style="display: none;">
         <button class="backdrop-btn active" data-mode="liquid-glass" data-alias="glass" onclick="setBackdropMode('liquid-glass')" role="tab" aria-selected="true" title="Authentic Desktop Blur Passthrough">🔮 Liquid Glass</button>
         <button class="backdrop-btn" data-mode="deep-space" data-alias="space" onclick="setBackdropMode('deep-space')" role="tab" aria-selected="false" title="Deep Space Dark (#080c14)">🌌 Deep Space</button>
-        <button class="backdrop-btn" data-mode="cad-studio" data-alias="studio" onclick="setBackdropMode('cad-studio')" role="tab" aria-selected="false" title="CAD Studio Neutral (#222834)">🛸 CAD Studio</button>
+        <button class="backdrop-btn" data-mode="cad-studio" data-alias="studio" onclick="setBackdropMode('cad-studio')" role="tab" aria-selected="false" title="Design Studio Neutral (#222834)">🛸 Design Studio</button>
       </div>
 
       <!-- Physics Overlay Toggle Pill -->
@@ -870,6 +1006,13 @@
             <div>DIAM: <span id="hud-diam" style="color:var(--accent-cyan);">-- m</span></div>
             <div>TRIANGLES: <span id="hud-tri" style="color:var(--accent-cyan);">--</span></div>
           </div>
+        </div>
+
+        <div class="camera-preset-controls" style="display:flex;gap:6px;margin-bottom:8px;justify-content:flex-end;">
+          <button id="btn-cam-full" class="btn-hud active" onclick="setCameraFocus('full')" title="Full Vehicle Overview (Cmd+Opt+0)">🔭 FULL</button>
+          <button id="btn-cam-engines" class="btn-hud" onclick="setCameraFocus('engines')" title="Engine Cluster & Nozzles (Cmd+Opt+E)">🔥 ENGINES</button>
+          <button id="btn-cam-fins" class="btn-hud" onclick="setCameraFocus('fins')" title="Fins & Base (Cmd+Opt+F)">🪽 FINS</button>
+          <button id="btn-cam-nose" class="btn-hud" onclick="setCameraFocus('nose')" title="Nose Cone & Fairing (Cmd+Opt+N)">🚀 NOSE</button>
         </div>
 
         <div class="viewport-controls">
@@ -955,21 +1098,180 @@
     </div>
   </footer>
 
+  <!-- Drawer Backdrop Scrim -->
+  <div id="drawer-backdrop" class="drawer-backdrop" onclick="closeAllDrawers()"></div>
+
+  <!-- CAD Connection Drawer -->
+  <div id="cad-drawer" class="drawer glass" style="width:380px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-subtle);padding-bottom:12px;">
+      <div style="font-weight:700;font-size:13px;letter-spacing:1px;color:#00e5ff;font-family:var(--font-mono);">📐 CAD CONNECTION // ONSHAPE</div>
+      <button class="btn-close" onclick="closeAllDrawers()" style="background:transparent;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;" title="Close Drawer (Esc)">✕</button>
+    </div>
+    
+    <div class="glass-card" style="background:rgba(22,33,56,0.6);border:1px solid var(--border-subtle);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">SYNC STATUS</span>
+        <span id="cad-drawer-status-badge" class="status-badge" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:var(--accent-amber);">● OFFLINE MOCK</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">DOCUMENT ID</span>
+        <span id="cad-drawer-doc-id" style="font-family:var(--font-mono);color:#fff;font-size:11px;">mock-doc-001</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">CREDENTIALS</span>
+        <span id="cad-drawer-key-status" style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">Not Configured</span>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1px;margin-bottom:8px;font-family:var(--font-mono);">INTEGRATION MODE</div>
+      <div id="cad-mode-selector" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button id="cad-mode-mock-btn" class="btn btn-hud active" onclick="switchCadMode('mock')">🛡️ Offline Mock</button>
+        <button id="cad-mode-live-btn" class="btn btn-hud" onclick="switchCadMode('live')">☁️ Live Onshape</button>
+      </div>
+    </div>
+
+    <div>
+      <button id="btn-open-cad-credentials" class="btn" onclick="openCadCredentialsModal()" style="width:100%;justify-content:center;margin-top:6px;">
+        ⚙️ Configure API Credentials
+      </button>
+    </div>
+  </div>
+
+  <!-- CAD Credentials Modal -->
+  <div id="cad-credentials-modal" class="modal glass" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2000;padding:24px;min-width:440px;max-width:520px;border-radius:12px;background:rgba(12,18,30,0.96);box-shadow:0 16px 48px rgba(0,0,0,0.7);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid var(--border-subtle);padding-bottom:10px;">
+      <h3 style="color:#00e5ff;font-size:14px;letter-spacing:1px;font-family:var(--font-mono);margin:0;">🔐 ONSHAPE CREDENTIALS</h3>
+      <button onclick="closeModal('cad-credentials-modal')" style="background:transparent;border:none;color:#94a3b8;cursor:pointer;font-size:16px;">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:4px;">ACCESS KEY</label>
+        <input type="text" id="cad-input-access-key" placeholder="Onshape access key..." style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:6px;padding:8px 10px;font-family:var(--font-mono);font-size:12px;" />
+      </div>
+      <div>
+        <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:4px;">SECRET KEY</label>
+        <input type="password" id="cad-input-secret-key" placeholder="Onshape secret key..." style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:6px;padding:8px 10px;font-family:var(--font-mono);font-size:12px;" />
+      </div>
+      <div>
+        <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:4px;">DOCUMENT ID</label>
+        <input type="text" id="cad-input-doc-id" placeholder="mock-doc-001 or Onshape DID" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:6px;padding:8px 10px;font-family:var(--font-mono);font-size:12px;" />
+      </div>
+      <div id="cad-credentials-error" style="color:var(--accent-red);font-size:11px;display:none;"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button class="btn" onclick="closeModal('cad-credentials-modal')">Cancel</button>
+      <button id="btn-save-cad-credentials" class="btn btn-primary" onclick="saveCadCredentials()">Save &amp; Connect</button>
+    </div>
+  </div>
+
   <!-- MLX Copilot Drawer -->
-  <div id="copilot-drawer" class="drawer glass" style="position:fixed;right:0;top:0;bottom:0;width:360px;z-index:1000;padding:20px;transform:translateX(100%);transition:transform 0.3s ease;overflow-y:auto;">
-    <h3 style="color:#00e5ff;margin-bottom:16px;">🤖 MLX Copilot</h3>
-    <div id="copilot-model-info" style="margin-bottom:16px;font-size:12px;color:#94a3b8;"></div>
-    <textarea id="copilot-intent" placeholder="Enter engineering goal..." style="width:100%;height:80px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#f1f5f9;border-radius:8px;padding:10px;font-size:13px;resize:none;"></textarea>
-    <button onclick="submitCopilotReview()" style="margin-top:10px;width:100%;background:rgba(0,229,255,0.15);border:1px solid #00e5ff;color:#00e5ff;padding:10px;border-radius:8px;cursor:pointer;font-size:13px;">Propose Design Changes</button>
-    <div id="copilot-diff-output" style="margin-top:16px;font-size:12px;"></div>
-    <button id="apply-diff-btn" onclick="applyProposedDiff()" style="display:none;margin-top:10px;width:100%;background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#10b981;padding:10px;border-radius:8px;cursor:pointer;font-size:13px;">✅ Apply to CAD &amp; Re-Simulate</button>
+  <div id="copilot-drawer" class="drawer glass" style="width:400px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-subtle);padding-bottom:12px;">
+      <h3 style="color:#00e5ff;font-size:14px;letter-spacing:1px;font-family:var(--font-mono);margin:0;">🤖 MLX COPILOT</h3>
+      <button onclick="closeAllDrawers()" style="background:transparent;border:none;color:#94a3b8;font-size:16px;cursor:pointer;" title="Close Drawer (Esc)">✕</button>
+    </div>
+
+    <!-- VRAM Pill -->
+    <div id="copilot-vram-pill" class="glass-card" style="background:rgba(22,33,56,0.6);border:1px solid var(--border-subtle);border-radius:8px;padding:10px 12px;font-family:var(--font-mono);font-size:11px;color:var(--accent-cyan);display:flex;align-items:center;gap:8px;">
+      <span style="font-weight:700;">⚡ METAL:</span>
+      <span id="vram-info-text">Detecting Apple Silicon Unified Memory...</span>
+    </div>
+
+    <!-- Model Catalog Dropdown & Downloader -->
+    <div>
+      <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:4px;">MODEL CATALOG</label>
+      <select id="copilot-model-select" class="glass" style="width:100%;background:rgba(13,20,36,0.8);border:1px solid var(--border-subtle);color:#fff;border-radius:6px;padding:8px;font-family:var(--font-mono);font-size:11px;" onchange="onModelSelectChange()">
+        <option value="">Loading MLX models...</option>
+      </select>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+        <button id="btn-download-model" class="btn" style="flex:1;font-size:11px;justify-content:center;" onclick="downloadSelectedModel()">⬇ Cache Model</button>
+        <span id="copilot-download-badge" class="status-badge" style="display:none;font-size:10px;">CACHED</span>
+      </div>
+      <div id="copilot-download-progress-container" style="display:none;margin-top:8px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:2px;">
+          <span id="copilot-download-status">Downloading...</span>
+          <span id="copilot-download-percent">0%</span>
+        </div>
+        <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">
+          <div id="copilot-download-bar" style="height:100%;width:0%;background:var(--accent-cyan);transition:width 0.2s ease;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dual Mode Tabs -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;background:rgba(0,0,0,0.3);padding:3px;border-radius:8px;border:1px solid var(--border-subtle);">
+      <button id="tab-btn-review" class="btn btn-hud active" onclick="switchCopilotTab('review')" style="font-size:11px;padding:6px 0;justify-content:center;">🛠️ Review Mode</button>
+      <button id="tab-btn-goal" class="btn btn-hud" onclick="switchCopilotTab('goal')" style="font-size:11px;padding:6px 0;justify-content:center;">🎯 Goal Mode</button>
+    </div>
+
+    <!-- Panel 1: Interactive Review Mode -->
+    <div id="panel-copilot-review" style="display:flex;flex-direction:column;gap:12px;">
+      <div id="copilot-model-info" style="display:none;font-size:11px;color:#94a3b8;"></div>
+      <textarea id="copilot-intent" placeholder="Enter engineering goal (e.g. Reduce first stage dry mass by 15% with FoS > 1.4)..." style="width:100%;height:80px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#f1f5f9;border-radius:8px;padding:10px;font-size:12px;resize:none;font-family:var(--font-sans);"></textarea>
+      
+      <!-- Quick Prompt Chips -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-hud" style="font-size:10px;padding:3px 8px;" onclick="setCopilotPrompt('Reduce airframe dry mass while maintaining yield FoS >= 2.0')">Mass Reduction</button>
+        <button class="btn btn-hud" style="font-size:10px;padding:3px 8px;" onclick="setCopilotPrompt('Improve yield FoS above 2.0 and lower peak von Mises stress')">Stress Relief</button>
+        <button class="btn btn-hud" style="font-size:10px;padding:3px 8px;" onclick="setCopilotPrompt('Increase target apogee to 100km with payload mass 5kg')">Target Apogee</button>
+      </div>
+
+      <button id="btn-propose-review" class="btn btn-primary" onclick="submitCopilotReview()" style="width:100%;justify-content:center;">Propose Design Changes</button>
+      
+      <div id="copilot-diff-output" style="font-size:12px;"></div>
+      
+      <button id="apply-diff-btn" onclick="applyProposedDiff()" style="display:none;width:100%;background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#10b981;padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;justify-content:center;">✅ Apply to CAD &amp; Re-Simulate</button>
+    </div>
+
+    <!-- Panel 2: Autonomous Goal Mode -->
+    <div id="panel-copilot-goal" style="display:none;flex-direction:column;gap:12px;">
+      <div style="font-size:11px;color:var(--text-muted);">Configure target engineering constraints for closed-loop multi-physics optimization:</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:2px;">TARGET APOGEE (km)</label>
+          <input type="number" id="goal-target-apogee" value="150" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:6px;padding:6px;font-family:var(--font-mono);font-size:11px;" />
+        </div>
+        <div>
+          <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:2px;">MAX STRESS (MPa)</label>
+          <input type="number" id="goal-target-stress" value="200" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:6px;padding:6px;font-family:var(--font-mono);font-size:11px;" />
+        </div>
+        <div>
+          <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:2px;">MIN YIELD FOS</label>
+          <input type="number" id="goal-target-fos" value="1.40" step="0.05" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:6px;padding:6px;font-family:var(--font-mono);font-size:11px;" />
+        </div>
+        <div>
+          <label style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);display:block;margin-bottom:2px;">MAX ITERATIONS</label>
+          <input type="number" id="goal-max-iterations" value="5" min="1" max="10" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:6px;padding:6px;font-family:var(--font-mono);font-size:11px;" />
+        </div>
+      </div>
+      <button id="btn-start-optimization" class="btn btn-primary" onclick="startAutonomousOptimization()" style="width:100%;justify-content:center;">🎯 Start Optimization</button>
+      
+      <div id="goal-progress-container" style="display:none;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;font-family:var(--font-mono);color:var(--text-dim);">CONVERGENCE STATUS</span>
+          <span id="goal-status-badge" class="status-badge">OPTIMIZING...</span>
+        </div>
+        <table id="goal-iterations-table" class="diff-table" style="font-size:10px;">
+          <thead><tr><th>ITR</th><th>APOGEE</th><th>STRESS</th><th>FOS</th></tr></thead>
+          <tbody id="goal-iterations-tbody"></tbody>
+        </table>
+        <div id="goal-result-summary" style="font-size:11px;font-family:var(--font-mono);color:var(--accent-green);"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Revision Diff Modal -->
-  <div id="diff-modal" class="modal glass" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2000;padding:24px;min-width:400px;max-width:600px;">
-    <h3 style="color:#00e5ff;">Revision Comparison</h3>
-    <div id="diff-content" style="margin-top:16px;font-size:12px;"></div>
-    <button onclick="closeAllDrawers()" style="margin-top:16px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#94a3b8;padding:8px 24px;border-radius:8px;cursor:pointer;">Close</button>
+  <div id="diff-modal" class="modal glass" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2000;padding:24px;min-width:440px;max-width:680px;background:rgba(12,18,30,0.96);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,0.7);">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-subtle);padding-bottom:10px;margin-bottom:14px;">
+      <h3 style="color:#00e5ff;font-size:14px;letter-spacing:1px;font-family:var(--font-mono);margin:0;">Δ PARAMETRIC REVISION DIFF</h3>
+      <button onclick="closeAllDrawers()" style="background:transparent;border:none;color:#94a3b8;font-size:16px;cursor:pointer;">✕</button>
+    </div>
+    <div id="diff-content" style="max-height:400px;overflow-y:auto;font-size:12px;"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+      <button class="btn" onclick="closeAllDrawers()">Close</button>
+    </div>
   </div>
 
   <script src="/static/app.js"></script>

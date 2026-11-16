@@ -316,7 +316,7 @@ def _extract_mesh_to_json(rev_id: int) -> dict[str, Any]:
         else:
             gmsh.model.occ.importShapes(str(step_file))
             gmsh.model.occ.synchronize()
-            gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 6)
+            gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 18)
             gmsh.model.mesh.generate(2)
 
         node_tags, coords, _ = gmsh.model.mesh.getNodes()
@@ -363,8 +363,17 @@ def _extract_mesh_to_json(rev_id: int) -> dict[str, Any]:
         norm_len[norm_len == 0] = 1.0
         normals = normals / norm_len
 
-        # Repeat normals for each vertex of the triangle: shape (N_tri, 3, 3)
-        tri_normals = np.repeat(normals[:, np.newaxis, :], 3, axis=1)
+        # Smooth vertex normals by accumulating face normals at shared nodes
+        node_normals = np.zeros((len(node_tags), 3), dtype=np.float32)
+        np.add.at(node_normals, v_indices[:, 0], normals)
+        np.add.at(node_normals, v_indices[:, 1], normals)
+        np.add.at(node_normals, v_indices[:, 2], normals)
+        n_len = np.linalg.norm(node_normals, axis=1, keepdims=True)
+        n_len[n_len == 0] = 1.0
+        node_normals = node_normals / n_len
+
+        # Map smooth node normals back to each triangle vertex
+        tri_normals = node_normals[v_indices]
 
         flat_verts = tri_verts.reshape(-1, 3).round(4).tolist()
         flat_normals = tri_normals.reshape(-1, 3).round(4).tolist()

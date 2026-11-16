@@ -45,6 +45,20 @@ const state = {
   },
   overlay: { mode: 'solid', meshData: null, ghostMesh: null, currentMesh: null },
   audio: { muted: false, ctx: null },
+  cad: {
+    connected: false,
+    mode: "mock",
+    document_id: "mock-doc-001",
+    access_key_configured: false,
+  },
+  copilot: {
+    vram: null,
+    models: [],
+    selectedModel: null,
+    downloading: false,
+    proposedModifications: null,
+    optimizing: false,
+  },
 };
 
 // ── Initialization ──────────────────────────────────────────────────────────
@@ -52,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initThreeJS();
   initClock();
   initAudio();
+  fetchCadStatus();
   fetchRevisions();
   initKeyboardShortcuts();
   window.addEventListener("resize", onWindowResize);
@@ -286,9 +301,77 @@ function renderMeshGeometry(meshData) {
   if (state.three.gridHelper) {
     state.three.gridHelper.scale.set(maxDim / 20, 1, maxDim / 20);
   }
+
+  // Apply active focus preset if set
+  if (state.three.cameraFocus && state.three.cameraFocus !== "full") {
+    setCameraFocus(state.three.cameraFocus, false);
+  }
 }
 
-// ── Viewport Control Actions ────────────────────────────────────────────────
+// ── Camera Focus Presets & Smooth Framing ──────────────────────────────────
+function setCameraFocus(target = "full", triggerEffects = true) {
+  const { camera, controls, rocketHeight, rocketRadius } = state.three;
+  if (!camera || !controls) return;
+
+  const h = rocketHeight || 60.0;
+  const r = rocketRadius || 1.85;
+
+  const validTargets = ["full", "engines", "fins", "staging", "nose"];
+  if (!validTargets.includes(target)) target = "full";
+
+  state.three.cameraFocus = target;
+
+  validTargets.forEach(t => {
+    const btn = document.getElementById(`btn-cam-${t}`);
+    if (btn) btn.classList.toggle("active", t === target);
+  });
+
+  if (target === "engines") {
+    // Macro zoom directly into the engine cluster and nozzles at vehicle base
+    const targetY = Math.min(2.5, Math.max(0.4, h * 0.02));
+    const dist = Math.max(4.5, r * 3.8);
+    controls.target.set(0, targetY, 0);
+    camera.position.set(dist * 0.72, Math.max(1.2, r * 0.9), dist * 0.72);
+  } else if (target === "fins") {
+    // Zoom to aerodynamic stabilizing fins and lower empennage
+    const targetY = Math.min(5.0, Math.max(1.5, r * 2.2));
+    const dist = Math.max(6.5, r * 4.6);
+    controls.target.set(0, targetY, 0);
+    camera.position.set(dist * 0.8, targetY + 1.2, dist * 0.8);
+  } else if (target === "staging") {
+    // Zoom to interstage adapter
+    const targetY = h * 0.70;
+    const dist = Math.max(7.0, r * 4.5);
+    controls.target.set(0, targetY, 0);
+    camera.position.set(dist * 0.75, targetY, dist * 0.75);
+  } else if (target === "nose") {
+    // Zoom into aerodynamic nose cone / fairing curvature
+    const targetY = h - Math.min(6.0, Math.max(2.0, h * 0.08));
+    const dist = Math.max(5.5, r * 3.8);
+    controls.target.set(0, targetY, 0);
+    camera.position.set(dist * 0.7, h - Math.min(2.0, h * 0.03), dist * 0.7);
+  } else {
+    // Full vehicle overview framing
+    const maxDim = Math.max(h, r * 2);
+    const fov = camera.fov * (Math.PI / 180);
+    let cameraDist = Math.abs(maxDim / Math.tan(fov / 2)) * 0.75;
+    cameraDist = Math.max(cameraDist, 10);
+    controls.target.set(0, h * 0.45, 0);
+    camera.position.set(cameraDist * 0.75, h * 0.55, cameraDist * 0.95);
+  }
+
+  camera.lookAt(controls.target);
+  controls.update();
+
+  if (triggerEffects) {
+    triggerHaptic("generic");
+    playAeroCue("click");
+  }
+}
+
+function resetCamera() {
+  setCameraFocus("full", true);
+}
 function toggleShadingMode() {
   const btn = document.getElementById("btn-shading-mode");
   if (state.view.shadingMode === "solid") {
@@ -333,17 +416,11 @@ function toggleWireframe() {
 
 function toggleAutoRotate() {
   state.view.autoRotate = !state.view.autoRotate;
-  document.getElementById("btn-autorotate").classList.toggle("active", state.view.autoRotate);
+  state.three.autoSpin = state.view.autoRotate;
+  const btn = document.getElementById("btn-autorotate");
+  if (btn) btn.classList.toggle("active", state.view.autoRotate);
 }
 
-function resetCamera() {
-  const { camera, controls, rocketHeight } = state.three;
-  if (!camera || !controls) return;
-  const dist = Math.max(rocketHeight * 1.2, 20);
-  camera.position.set(dist * 0.75, rocketHeight * 0.55, dist * 0.95);
-  controls.target.set(0, rocketHeight * 0.45, 0);
-  controls.update();
-}
 
 // ── Data Fetching & Dashboard Updating ───────────────────────────────────────
 async function fetchRevisions() {
@@ -801,6 +878,7 @@ const BACKDROP_ALIASES = {
   "glass": "liquid-glass",
   "space": "deep-space",
   "studio": "cad-studio",
+  "design-studio": "cad-studio",
 };
 
 function setBackdropMode(mode) {
@@ -1350,12 +1428,7 @@ function toggleRevisionGhosting() {
   }
 
   // Tactile haptic feedback via macOS AppKit bridge
-  if (window.webkit?.messageHandlers?.goddardBridge) {
-    window.webkit.messageHandlers.goddardBridge.postMessage({
-      action: "haptic",
-      style: "generic",
-    });
-  }
+  triggerHaptic("generic");
   playAeroCue("click");
 }
 
@@ -1363,79 +1436,889 @@ function showRevisionGhost(priorMeshData) {
   renderRevisionGhostGeometry(priorMeshData);
 }
 
-// ── Keyboard Shortcuts ───────────────────────────────────────────────────────
-function initKeyboardShortcuts() {
-  document.addEventListener('keydown', (e) => {
-    const isMac = navigator.platform.includes('Mac');
-    const mod = isMac ? e.metaKey : e.ctrlKey;
-    if (mod && e.key === 'k') { e.preventDefault(); toggleCopilotDrawer(); }
-    if (mod && e.key === 'r') { e.preventDefault(); triggerResimulateCurrent(); }
-    if (mod && e.key === 'd') { e.preventDefault(); toggleDiffModal(); }
-    if (mod && e.key === 'e') { e.preventDefault(); triggerExportBundle(); }
-    if (e.key === ' ' && !e.target.matches('input,textarea')) { e.preventDefault(); toggleAutoSpin(); }
-    if (e.key === 'Escape') { closeAllDrawers(); }
-  });
+// ── WebKit IPC Bridge & Haptics ──────────────────────────────────────────────
+function dispatchIPC(message) {
+  let delivered = false;
+  try {
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.goddardBridge) {
+      window.webkit.messageHandlers.goddardBridge.postMessage(message);
+      delivered = true;
+    }
+  } catch (err) {
+    console.debug("WebKit IPC dispatch error:", err);
+  }
+
+  // Web fallback if running in standalone browser without AppKit WKWebView
+  if (!delivered) {
+    if (message.action === "haptic" && message.style) {
+      fetch("/api/events/haptic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ style: message.style }),
+      }).catch(() => {});
+    } else if (message.action === "playSound" && message.sound) {
+      playAeroCue(message.sound);
+    }
+  }
+  return delivered;
 }
 
-function toggleCopilotDrawer() {
-  const drawer = document.getElementById('copilot-drawer');
-  if (drawer) drawer.classList.toggle('open');
-}
-function toggleAutoSpin() {
-  state.three.autoSpin = !state.three.autoSpin;
-}
-function closeAllDrawers() {
-  document.querySelectorAll('.drawer.open, .modal.open').forEach(el => el.classList.remove('open'));
-}
-function triggerResimulateCurrent() {
-  showToast('Re-simulating...', 'info');
-}
-function triggerExportBundle() {
-  const revId = state.activeRevisionId || 1;
-  window.location.href = `/api/revisions/${revId}/bundle`;
-}
-function toggleDiffModal() {
-  const modal = document.getElementById('diff-modal');
-  if (modal) modal.classList.toggle('open');
+function triggerHaptic(style = "generic") {
+  dispatchIPC({ action: "haptic", style: style });
+  // If not delivered to WebKit, ensure the REST telemetry endpoint logs the haptic
+  if (!window.webkit?.messageHandlers?.goddardBridge) {
+    fetch("/api/events/haptic", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ style: style }),
+    }).catch(() => {});
+  }
 }
 
-// Copilot placeholders
-function submitCopilotReview() {
-  showToast('Copilot review submitted...', 'info');
-}
-function applyProposedDiff() {
-  showToast('Applying diff to CAD...', 'info');
+function triggerSoundCue(soundName) {
+  playAeroCue(soundName);
+  dispatchIPC({ action: "playSound", sound: soundName });
 }
 
 // ── Web Audio Aerospace Cues ─────────────────────────────────────────────────
 function initAudio() {
-  try { state.audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      state.audio.ctx = new AudioContextClass();
+    }
+  } catch (e) {
+    console.debug("Web Audio initialization skipped:", e);
+  }
+
+  // Restore persisted mute preferences
+  const savedMuted = localStorage.getItem("goddard_audio_muted") || localStorage.getItem("goddard_muted");
+  if (savedMuted !== null) {
+    state.audio.muted = (savedMuted === "true");
+    updateAudioMuteUI();
+  }
+
+  // Auto-resume AudioContext on first user interaction gesture
+  const resumeAudioContext = () => {
+    if (state.audio.ctx && state.audio.ctx.state === "suspended") {
+      state.audio.ctx.resume().catch(() => {});
+    }
+    window.removeEventListener("click", resumeAudioContext);
+    window.removeEventListener("keydown", resumeAudioContext);
+  };
+  window.addEventListener("click", resumeAudioContext, { once: true });
+  window.addEventListener("keydown", resumeAudioContext, { once: true });
 }
 
 function playAeroCue(type) {
   if (state.audio.muted || !state.audio.ctx) return;
   const ctx = state.audio.ctx;
+  if (ctx.state === "suspended") {
+    ctx.resume().catch(() => {});
+  }
+  const now = ctx.currentTime;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.connect(gain);
   gain.connect(ctx.destination);
+
   if (type === 'complete') {
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.3);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-    osc.start(); osc.stop(ctx.currentTime + 0.4);
+    // Rising two-tone arpeggio (880 Hz -> 1760 Hz)
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.exponentialRampToValueAtTime(1760, now + 0.28);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+    osc.start(now);
+    osc.stop(now + 0.38);
+  } else if (type === 'touchdown') {
+    // Hoverslam touchdown harmonic chime (C5: 523.25Hz -> 659.25Hz -> 783.99Hz)
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(523.25, now);
+    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15);
+    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.35);
+    gain.gain.setValueAtTime(0.14, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    osc.start(now);
+    osc.stop(now + 0.6);
   } else if (type === 'alert') {
-    osc.frequency.setValueAtTime(220, ctx.currentTime);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-    osc.start(); osc.stop(ctx.currentTime + 0.5);
+    // Urgent alarm tone (220 Hz low square/sawtooth tone)
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(220, now);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  } else if (type === 'warning') {
+    // Advisory tone (370 Hz)
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(370, now);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    osc.start(now);
+    osc.stop(now + 0.25);
   } else if (type === 'click') {
-    osc.frequency.setValueAtTime(440, ctx.currentTime);
-    gain.gain.setValueAtTime(0.05, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-    osc.start(); osc.stop(ctx.currentTime + 0.08);
+    // UI transient click
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(440, now);
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    osc.start(now);
+    osc.stop(now + 0.05);
   }
+}
+
+function updateAudioMuteUI() {
+  const btn = document.getElementById("btn-audio-mute");
+  const icon = document.getElementById("audio-mute-icon");
+  if (icon) icon.textContent = state.audio.muted ? "🔇" : "🔊";
+  if (btn) {
+    btn.innerHTML = `<span id="audio-mute-icon">${state.audio.muted ? "🔇" : "🔊"}</span> AUDIO: ${state.audio.muted ? "MUTED" : "ON"}`;
+    btn.classList.toggle("active", state.audio.muted);
+  }
+}
+
+function toggleAudioMute(forceState) {
+  state.audio.muted = (forceState !== undefined) ? !!forceState : !state.audio.muted;
+  localStorage.setItem("goddard_audio_muted", state.audio.muted ? "true" : "false");
+  localStorage.setItem("goddard_muted", state.audio.muted ? "true" : "false");
+  updateAudioMuteUI();
+
+  fetch("/api/audio/mute", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ muted: state.audio.muted }),
+  }).catch(() => {});
+
+  dispatchIPC({ action: "toggleMute", muted: state.audio.muted });
+  showToast(`Audio Cues: ${state.audio.muted ? "MUTED" : "ENABLED"}`, "info");
+}
+
+// ── CAD Connection Drawer & Credentials ─────────────────────────────────────
+function fetchCadStatus() {
+  fetch("/api/cad/status")
+    .then(res => res.json())
+    .then(data => {
+      state.cad = { ...state.cad, ...data };
+      updateCadUI();
+    })
+    .catch(err => console.debug("CAD status fetch failed:", err));
+}
+
+function updateCadUI() {
+  const pill = document.getElementById("cad-status-pill");
+  const pillText = document.getElementById("cad-status-text");
+  const drawerBadge = document.getElementById("cad-drawer-status-badge");
+  const drawerDocId = document.getElementById("cad-drawer-doc-id");
+  const drawerKeyStatus = document.getElementById("cad-drawer-key-status");
+  const mockBtn = document.getElementById("cad-mode-mock-btn");
+  const liveBtn = document.getElementById("cad-mode-live-btn");
+
+  const isLive = (state.cad.mode === "live");
+  const isConnected = state.cad.connected;
+
+  if (mockBtn) mockBtn.classList.toggle("active", !isLive);
+  if (liveBtn) liveBtn.classList.toggle("active", isLive);
+
+  if (pill) {
+    pill.className = `status-badge ${isLive && isConnected ? "cad-badge-live" : "cad-badge-mock"}`;
+  }
+  if (pillText) {
+    pillText.textContent = isLive ? (isConnected ? "CAD CONNECTED" : "CAD DISCONNECTED") : "OFFLINE MOCK";
+  }
+  if (drawerBadge) {
+    if (isLive && isConnected) {
+      drawerBadge.style.background = "rgba(16,185,129,0.15)";
+      drawerBadge.style.borderColor = "rgba(16,185,129,0.4)";
+      drawerBadge.style.color = "var(--accent-green)";
+      drawerBadge.textContent = "● CONNECTED (LIVE)";
+    } else if (isLive) {
+      drawerBadge.style.background = "rgba(239,68,68,0.15)";
+      drawerBadge.style.borderColor = "rgba(239,68,68,0.4)";
+      drawerBadge.style.color = "var(--accent-red)";
+      drawerBadge.textContent = "● DISCONNECTED";
+    } else {
+      drawerBadge.style.background = "rgba(245,158,11,0.15)";
+      drawerBadge.style.borderColor = "rgba(245,158,11,0.4)";
+      drawerBadge.style.color = "var(--accent-amber)";
+      drawerBadge.textContent = "● OFFLINE MOCK";
+    }
+  }
+  if (drawerDocId) {
+    drawerDocId.textContent = state.cad.document_id || "mock-doc-001";
+  }
+  if (drawerKeyStatus) {
+    drawerKeyStatus.textContent = state.cad.access_key_configured ? "Configured" : "Not Configured";
+  }
+}
+
+function toggleCadDrawer() {
+  const drawer = document.getElementById("cad-drawer");
+  const backdrop = document.getElementById("drawer-backdrop");
+  if (!drawer) return;
+  const isOpen = drawer.classList.contains("open");
+  if (isOpen) {
+    closeAllDrawers();
+  } else {
+    closeAllDrawers();
+    drawer.classList.add("open");
+    if (backdrop) backdrop.classList.add("active");
+    fetchCadStatus();
+    triggerHaptic("generic");
+    playAeroCue("click");
+  }
+}
+
+function switchCadMode(mode) {
+  fetch("/api/cad/mode", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode: mode }),
+  })
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      state.cad.mode = data.mode;
+      state.cad.connected = data.connected;
+      updateCadUI();
+      triggerHaptic("generic");
+      playAeroCue("click");
+      showToast(`CAD Mode: ${data.mode.toUpperCase()}`, "info");
+    })
+    .catch(err => showToast(`Failed to switch CAD mode: ${err.message}`, "error"));
+}
+
+function openCadCredentialsModal() {
+  const modal = document.getElementById("cad-credentials-modal");
+  const docInput = document.getElementById("cad-input-doc-id");
+  const errDiv = document.getElementById("cad-credentials-error");
+  if (errDiv) errDiv.style.display = "none";
+  if (docInput && state.cad.document_id) {
+    docInput.value = state.cad.document_id;
+  }
+  if (modal) {
+    modal.style.display = "block";
+    modal.classList.add("open");
+  }
+  const backdrop = document.getElementById("drawer-backdrop");
+  if (backdrop) backdrop.classList.add("active");
+  triggerHaptic("generic");
+}
+
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.style.display = "none";
+    modal.classList.remove("open");
+  }
+  const backdrop = document.getElementById("drawer-backdrop");
+  const anyOpenDrawer = document.querySelector(".drawer.open");
+  if (backdrop && !anyOpenDrawer) {
+    backdrop.classList.remove("active");
+  }
+}
+
+function saveCadCredentials() {
+  const accessKey = document.getElementById("cad-input-access-key")?.value || "";
+  const secretKey = document.getElementById("cad-input-secret-key")?.value || "";
+  const docId = document.getElementById("cad-input-doc-id")?.value || "";
+  const errDiv = document.getElementById("cad-credentials-error");
+
+  if (!accessKey.trim() || !secretKey.trim() || !docId.trim()) {
+    if (errDiv) {
+      errDiv.textContent = "All fields (Access Key, Secret Key, Document ID) are required.";
+      errDiv.style.display = "block";
+    }
+    return;
+  }
+
+  fetch("/api/cad/config", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      access_key: accessKey.trim(),
+      secret_key: secretKey.trim(),
+      document_id: docId.trim(),
+    }),
+  })
+    .then(res => {
+      if (!res.ok) return res.json().then(j => { throw new Error(j.detail || `HTTP ${res.status}`); });
+      return res.json();
+    })
+    .then(data => {
+      closeModal("cad-credentials-modal");
+      triggerHaptic("alignment");
+      triggerSoundCue("complete");
+      showToast("Onshape credentials persisted", "success");
+      fetchCadStatus();
+    })
+    .catch(err => {
+      if (errDiv) {
+        errDiv.textContent = err.message;
+        errDiv.style.display = "block";
+      }
+      showToast(`Credential Error: ${err.message}`, "error");
+    });
+}
+
+// ── MLX Copilot Drawer & Workflows ──────────────────────────────────────────
+function toggleCopilotDrawer() {
+  const drawer = document.getElementById("copilot-drawer");
+  const backdrop = document.getElementById("drawer-backdrop");
+  if (!drawer) return;
+  const isOpen = drawer.classList.contains("open");
+  if (isOpen) {
+    closeAllDrawers();
+  } else {
+    closeAllDrawers();
+    drawer.classList.add("open");
+    if (backdrop) backdrop.classList.add("active");
+    loadCopilotVram();
+    loadCopilotModels();
+    triggerHaptic("generic");
+    playAeroCue("click");
+    setTimeout(() => {
+      document.getElementById("copilot-intent")?.focus();
+    }, 100);
+  }
+}
+
+function loadCopilotVram() {
+  fetch("/api/copilot/vram")
+    .then(res => res.json())
+    .then(data => {
+      state.copilot.vram = data;
+      const txt = document.getElementById("vram-info-text");
+      if (txt) {
+        const tierStr = data.tier ? data.tier.toUpperCase() : "PRO";
+        txt.textContent = `${data.physical_ram_gib.toFixed(1)} GiB RAM (${tierStr}) • ${data.default_quantization} • Ctx: ${data.default_context_length}`;
+      }
+    })
+    .catch(err => console.debug("VRAM load failed:", err));
+}
+
+function loadCopilotModels() {
+  fetch("/api/copilot/models")
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById("copilot-model-select");
+      if (!select) return;
+      select.innerHTML = "";
+      const models = data.models || data.preset_catalog || [];
+      state.copilot.models = models;
+      const cached = new Set(data.cached_models || []);
+
+      models.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m.repo_id;
+        const isCached = cached.has(m.repo_id);
+        opt.textContent = `${m.name || m.repo_id} (${m.size_gib ? m.size_gib + "GB" : m.size || "7B"}${isCached ? " - CACHED" : ""})`;
+        if (m.repo_id === data.recommended_repo) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      });
+      onModelSelectChange();
+    })
+    .catch(err => console.debug("Models load failed:", err));
+}
+
+function onModelSelectChange() {
+  const select = document.getElementById("copilot-model-select");
+  const badge = document.getElementById("copilot-download-badge");
+  const btn = document.getElementById("btn-download-model");
+  if (!select) return;
+  const selVal = select.value;
+  state.copilot.selectedModel = selVal;
+  const isCached = select.selectedOptions[0]?.textContent?.includes("CACHED");
+  if (badge) badge.style.display = isCached ? "inline-block" : "none";
+  if (btn) btn.textContent = isCached ? "✔ Model Cached" : "⬇ Cache Model";
+}
+
+function downloadSelectedModel() {
+  const select = document.getElementById("copilot-model-select");
+  const repoId = select?.value;
+  if (!repoId) return;
+
+  const progCont = document.getElementById("copilot-download-progress-container");
+  const progBar = document.getElementById("copilot-download-bar");
+  const progPct = document.getElementById("copilot-download-percent");
+  const progStatus = document.getElementById("copilot-download-status");
+  const btn = document.getElementById("btn-download-model");
+
+  if (progCont) progCont.style.display = "block";
+  if (btn) btn.disabled = true;
+
+  fetch("/api/copilot/download", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ repo_id: repoId, offline_mock: true }),
+  })
+    .then(res => res.json())
+    .then(data => {
+      let pct = 0;
+      const interval = setInterval(() => {
+        pct += 25;
+        if (pct > 100) pct = 100;
+        if (progBar) progBar.style.width = `${pct}%`;
+        if (progPct) progPct.textContent = `${pct}%`;
+        if (progStatus) progStatus.textContent = pct === 100 ? "Complete" : "Downloading...";
+
+        if (pct >= 100) {
+          clearInterval(interval);
+          if (btn) btn.disabled = false;
+          triggerHaptic("levelChange");
+          triggerSoundCue("complete");
+          showToast(`Model ${repoId} cached successfully!`, "success");
+          loadCopilotModels();
+        }
+      }, 100);
+    })
+    .catch(err => {
+      if (progCont) progCont.style.display = "none";
+      if (btn) btn.disabled = false;
+      showToast(`Download error: ${err.message}`, "error");
+    });
+}
+
+function switchCopilotTab(tab) {
+  const reviewBtn = document.getElementById("tab-btn-review");
+  const goalBtn = document.getElementById("tab-btn-goal");
+  const reviewPanel = document.getElementById("panel-copilot-review");
+  const goalPanel = document.getElementById("panel-copilot-goal");
+
+  if (tab === "review") {
+    if (reviewBtn) reviewBtn.classList.add("active");
+    if (goalBtn) goalBtn.classList.remove("active");
+    if (reviewPanel) reviewPanel.style.display = "flex";
+    if (goalPanel) goalPanel.style.display = "none";
+  } else {
+    if (reviewBtn) reviewBtn.classList.remove("active");
+    if (goalBtn) goalBtn.classList.add("active");
+    if (reviewPanel) reviewPanel.style.display = "none";
+    if (goalPanel) goalPanel.style.display = "flex";
+  }
+  playAeroCue("click");
+  triggerHaptic("generic");
+}
+
+function setCopilotPrompt(text) {
+  const ta = document.getElementById("copilot-intent");
+  if (ta) {
+    ta.value = text;
+    ta.focus();
+  }
+  playAeroCue("click");
+}
+
+function renderCopilotDiff(diffData) {
+  const out = document.getElementById("copilot-diff-output");
+  if (!out) return;
+  const mods = diffData.modifications || {};
+  const summary = diffData.summary || "Proposed parameter adjustments:";
+  const rationale = diffData.rationale || "";
+
+  let tableRows = "";
+  for (const [k, v] of Object.entries(mods)) {
+    const oldVal = (typeof v.old === 'number') ? v.old.toFixed(2) : v.old;
+    const newVal = (typeof v.new === 'number') ? v.new.toFixed(2) : v.new;
+    const delta = (typeof v.delta === 'number') ? (v.delta > 0 ? `+${v.delta.toFixed(2)}` : v.delta.toFixed(2)) : "";
+    const unit = v.unit || "";
+    tableRows += `
+      <tr>
+        <td style="color:#f1f5f9;font-weight:500;">${k}</td>
+        <td class="diff-old">${oldVal} ${unit}</td>
+        <td class="diff-new">${newVal} ${unit}</td>
+        <td><span class="diff-delta ${v.delta >= 0 ? "diff-delta-positive" : "diff-delta-negative"}">${delta}</span></td>
+      </tr>
+    `;
+  }
+
+  out.innerHTML = `
+    <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);border-radius:8px;padding:10px;margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+      <div style="color:var(--accent-cyan);font-weight:600;font-size:11px;">📋 ${summary}</div>
+      ${rationale ? `<div style="color:var(--text-muted);font-size:10px;line-height:1.4;">${rationale}</div>` : ""}
+      <table id="copilot-modifications-table" class="diff-table">
+        <thead><tr><th>PARAM</th><th>OLD</th><th>NEW</th><th>Δ</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function submitCopilotReview() {
+  const intentInput = document.getElementById("copilot-intent");
+  const intent = intentInput?.value?.trim();
+  if (!intent) {
+    showToast("Please enter an engineering goal or click a chip", "warning");
+    playAeroCue("warning");
+    return;
+  }
+  const btn = document.getElementById("btn-propose-review");
+  if (btn) { btn.disabled = true; btn.textContent = "Analyzing Geometry & Margins..."; }
+
+  const baseRev = state.activeRevId || state.activeRevisionId || 1;
+  const currentParams = state.activeRevData?.inputs || {};
+
+  fetch("/api/copilot/review", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      intent: intent,
+      base_revision_id: baseRev,
+      current_params: currentParams,
+    }),
+  })
+    .then(res => {
+      if (!res.ok) return res.json().then(j => { throw new Error(j.detail || `HTTP ${res.status}`); });
+      return res.json();
+    })
+    .then(data => {
+      if (btn) { btn.disabled = false; btn.textContent = "Propose Design Changes"; }
+      state.copilot.proposedModifications = data.modifications;
+      renderCopilotDiff(data);
+      const applyBtn = document.getElementById("apply-diff-btn");
+      if (applyBtn) applyBtn.style.display = "flex";
+      triggerHaptic("generic");
+      playAeroCue("click");
+      showToast("Proposed changes ready for review", "info");
+    })
+    .catch(err => {
+      if (btn) { btn.disabled = false; btn.textContent = "Propose Design Changes"; }
+      showToast(`Review error: ${err.message}`, "error");
+      triggerSoundCue("alert");
+    });
+}
+
+function applyProposedDiff() {
+  if (!state.copilot.proposedModifications) return;
+  const applyBtn = document.getElementById("apply-diff-btn");
+  if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = "⏳ Sizing, Meshing & Simulating..."; }
+
+  const baseRev = state.activeRevId || state.activeRevisionId || 1;
+
+  fetch("/api/copilot/apply", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      base_revision_id: baseRev,
+      modifications: state.copilot.proposedModifications,
+    }),
+  })
+    .then(res => {
+      if (!res.ok) return res.json().then(j => { throw new Error(j.detail || `HTTP ${res.status}`); });
+      return res.json();
+    })
+    .then(async data => {
+      if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = "✅ Apply to CAD & Re-Simulate"; }
+      triggerHaptic("alignment");
+      triggerSoundCue("complete");
+      const newRevId = data.new_revision_id || data.revision_id;
+      showToast(`Revision ${newRevId} created and committed!`, "success");
+      await fetchRevisions();
+      selectRevision(newRevId);
+      closeAllDrawers();
+    })
+    .catch(err => {
+      if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = "✅ Apply to CAD & Re-Simulate"; }
+      showToast(`Apply error: ${err.message}`, "error");
+      triggerSoundCue("alert");
+    });
+}
+
+function startAutonomousOptimization() {
+  const apogeeKm = parseFloat(document.getElementById("goal-target-apogee")?.value || "150");
+  const maxStress = parseFloat(document.getElementById("goal-target-stress")?.value || "200");
+  const minFos = parseFloat(document.getElementById("goal-target-fos")?.value || "1.40");
+  const maxIter = parseInt(document.getElementById("goal-max-iterations")?.value || "5", 10);
+
+  const startBtn = document.getElementById("btn-start-optimization");
+  const progCont = document.getElementById("goal-progress-container");
+  const badge = document.getElementById("goal-status-badge");
+  const tbody = document.getElementById("goal-iterations-tbody");
+  const sumDiv = document.getElementById("goal-result-summary");
+
+  if (progCont) progCont.style.display = "flex";
+  if (badge) { badge.textContent = "OPTIMIZING..."; badge.className = "status-badge"; }
+  if (tbody) tbody.innerHTML = "";
+  if (sumDiv) sumDiv.textContent = "";
+  if (startBtn) { startBtn.disabled = true; startBtn.textContent = "⏳ Running Multi-Physics Loop..."; }
+
+  const baseRev = state.activeRevId || state.activeRevisionId || 1;
+
+  fetch("/api/copilot/optimize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      targets: {
+        apogee_m: apogeeKm * 1000.0,
+        von_mises_stress_mpa: maxStress,
+        yield_fos: minFos,
+      },
+      max_iterations: maxIter,
+      base_revision_id: baseRev,
+    }),
+  })
+    .then(res => {
+      if (!res.ok) return res.json().then(j => { throw new Error(j.detail || `HTTP ${res.status}`); });
+      return res.json();
+    })
+    .then(async data => {
+      if (startBtn) { startBtn.disabled = false; startBtn.textContent = "🎯 Start Optimization"; }
+      const history = data.history || [];
+      if (tbody) {
+        tbody.innerHTML = history.map((h, i) => `
+          <tr>
+            <td>#${i + 1}</td>
+            <td>${(h.apogee_m ? (h.apogee_m / 1000).toFixed(1) : "-")} km</td>
+            <td>${h.von_mises_stress_mpa ? h.von_mises_stress_mpa.toFixed(1) : "-"} MPa</td>
+            <td>${h.yield_fos ? h.yield_fos.toFixed(2) : "-"}</td>
+          </tr>
+        `).join("");
+      }
+
+      if (data.status === "converged") {
+        if (badge) {
+          badge.textContent = `CONVERGED (${data.iterations || data.iterations_run} ITR)`;
+          badge.style.background = "rgba(16,185,129,0.2)";
+          badge.style.color = "var(--accent-green)";
+        }
+        if (sumDiv) {
+          sumDiv.textContent = `✔ All constraints satisfied! Target Apogee: ${apogeeKm}km, FoS >= ${minFos}. Final Revision: ${data.final_revision_id || data.converged_revision_id || data.revision_id}`;
+          sumDiv.style.color = "var(--accent-green)";
+        }
+        triggerHaptic("levelChange");
+        triggerSoundCue("touchdown");
+        showToast(`Optimization Converged in ${data.iterations || data.iterations_run} iterations!`, "success");
+        const finalRevId = data.final_revision_id || data.converged_revision_id || data.revision_id;
+        if (finalRevId) {
+          await fetchRevisions();
+          selectRevision(finalRevId);
+        }
+      } else {
+        if (badge) {
+          badge.textContent = "FAILED CONVERGENCE";
+          badge.style.background = "rgba(239,68,68,0.2)";
+          badge.style.color = "var(--accent-red)";
+        }
+        if (sumDiv) {
+          sumDiv.textContent = "Reached max iterations before satisfying all margins.";
+          sumDiv.style.color = "var(--accent-amber)";
+        }
+        triggerHaptic("generic");
+        triggerSoundCue("alert");
+        showToast("Optimization reached limit without full convergence", "warning");
+      }
+    })
+    .catch(err => {
+      if (startBtn) { startBtn.disabled = false; startBtn.textContent = "🎯 Start Optimization"; }
+      if (badge) { badge.textContent = "ERROR"; badge.style.color = "var(--accent-red)"; }
+      showToast(`Optimization error: ${err.message}`, "error");
+      triggerSoundCue("alert");
+    });
+}
+
+// ── Revision Diff Modal ──────────────────────────────────────────────────────
+function toggleDiffModal() {
+  const modal = document.getElementById("diff-modal");
+  const backdrop = document.getElementById("drawer-backdrop");
+  if (!modal) return;
+  const isHidden = (modal.style.display === "none" || !modal.classList.contains("open"));
+  if (!isHidden) {
+    closeAllDrawers();
+  } else {
+    closeAllDrawers();
+    renderDiffModalContent();
+    modal.style.display = "block";
+    modal.classList.add("open");
+    if (backdrop) backdrop.classList.add("active");
+    triggerHaptic("generic");
+    playAeroCue("click");
+  }
+}
+
+function renderDiffModalContent() {
+  const content = document.getElementById("diff-content");
+  if (!content) return;
+  const rev = state.activeRevData;
+  if (!rev) {
+    content.innerHTML = "<div style='color:var(--text-muted);'>No active revision loaded.</div>";
+    return;
+  }
+  const revId = rev.revision_id;
+  const priorRev = state.revisions.find(r => r.revision_id === revId - 1);
+  const diffs = rev.diff_against_predecessor || {};
+
+  let rows = "";
+  if (Object.keys(diffs).length > 0) {
+    for (const [k, v] of Object.entries(diffs)) {
+      const oldVal = (v.old !== undefined) ? v.old : "-";
+      const newVal = (v.new !== undefined) ? v.new : "-";
+      const delta = (v.delta !== undefined) ? (v.delta > 0 ? `+${v.delta}` : `${v.delta}`) : "";
+      rows += `
+        <tr>
+          <td style="color:#f1f5f9;font-weight:500;">${k}</td>
+          <td class="diff-old">${oldVal}</td>
+          <td class="diff-new">${newVal}</td>
+          <td><span class="diff-delta ${parseFloat(delta) >= 0 ? "diff-delta-positive" : "diff-delta-negative"}">${delta}</span></td>
+        </tr>
+      `;
+    }
+  } else if (priorRev && rev.inputs) {
+    for (const [k, v] of Object.entries(rev.inputs)) {
+      const oldV = priorRev.inputs ? priorRev.inputs[k] : undefined;
+      if (oldV !== undefined && oldV !== v) {
+        const delta = (typeof v === 'number' && typeof oldV === 'number') ? (v - oldV).toFixed(2) : "";
+        rows += `
+          <tr>
+            <td style="color:#f1f5f9;">${k}</td>
+            <td class="diff-old">${oldV}</td>
+            <td class="diff-new">${v}</td>
+            <td><span class="diff-delta">${delta}</span></td>
+          </tr>
+        `;
+      }
+    }
+  }
+
+  if (!rows) {
+    content.innerHTML = `
+      <div style="padding:12px;color:var(--text-muted);text-align:center;">
+        ${revId === 1 ? "Baseline design revision (Rev 001) has no predecessor." : "No parametric differences detected from predecessor."}
+      </div>
+    `;
+  } else {
+    content.innerHTML = `
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+        Comparing <span style="color:#00e5ff;font-weight:600;">Rev ${revId}</span> against <span style="color:var(--text-dim);">Rev ${revId - 1}</span>:
+      </div>
+      <table class="diff-table">
+        <thead><tr><th>PARAMETER</th><th>PREVIOUS</th><th>CURRENT</th><th>DELTA</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+}
+
+function closeAllDrawers() {
+  document.querySelectorAll(".drawer.open, .modal.open").forEach(el => {
+    el.classList.remove("open");
+    if (el.classList.contains("modal")) el.style.display = "none";
+  });
+  const cadCredModal = document.getElementById("cad-credentials-modal");
+  if (cadCredModal) {
+    cadCredModal.style.display = "none";
+    cadCredModal.classList.remove("open");
+  }
+  const diffModal = document.getElementById("diff-modal");
+  if (diffModal) {
+    diffModal.style.display = "none";
+    diffModal.classList.remove("open");
+  }
+  const backdrop = document.getElementById("drawer-backdrop");
+  if (backdrop) backdrop.classList.remove("active");
+}
+
+function toggleAutoSpin() {
+  toggleAutoRotate();
+}
+
+function triggerResimulateCurrent() {
+  showToast("Re-running sizing & flight simulation...", "info");
+  triggerHaptic("alignment");
+  playAeroCue("complete");
+  fetchRevisions().then(() => {
+    if (state.activeRevId) selectRevision(state.activeRevId);
+  });
+}
+
+function triggerExportBundle() {
+  downloadActiveBundle();
+}
+
+// ── Global Keyboard Shortcuts ────────────────────────────────────────────────
+function initKeyboardShortcuts() {
+  document.addEventListener('keydown', (e) => {
+    const isMac = navigator.platform.includes('Mac');
+    const mod = isMac ? e.metaKey : e.ctrlKey;
+
+    // Native macOS Menu Bar Backdrop Shortcuts: Cmd+Alt+1, 2, 3
+    if (mod && e.altKey && e.key === '1') {
+      e.preventDefault();
+      setBackdropMode('liquid-glass');
+      return;
+    }
+    if (mod && e.altKey && e.key === '2') {
+      e.preventDefault();
+      setBackdropMode('deep-space');
+      return;
+    }
+    if (mod && e.altKey && e.key === '3') {
+      e.preventDefault();
+      setBackdropMode('cad-studio');
+      return;
+    }
+
+    // Camera Focus Presets: Cmd+Alt+0, E, F, N
+    if (mod && e.altKey && e.key === '0') {
+      e.preventDefault();
+      setCameraFocus('full');
+      return;
+    }
+    if (mod && e.altKey && (e.key === 'e' || e.key === 'E')) {
+      e.preventDefault();
+      setCameraFocus('engines');
+      return;
+    }
+    if (mod && e.altKey && (e.key === 'f' || e.key === 'F')) {
+      e.preventDefault();
+      setCameraFocus('fins');
+      return;
+    }
+    if (mod && e.altKey && (e.key === 'n' || e.key === 'N')) {
+      e.preventDefault();
+      setCameraFocus('nose');
+      return;
+    }
+
+    if (mod && e.key === 'k') {
+      e.preventDefault();
+      toggleCopilotDrawer();
+      return;
+    }
+    if (mod && e.key === 'r') {
+      e.preventDefault();
+      triggerResimulateCurrent();
+      return;
+    }
+    if (mod && e.key === 'd') {
+      e.preventDefault();
+      toggleDiffModal();
+      return;
+    }
+    if (mod && e.key === 'e') {
+      e.preventDefault();
+      triggerExportBundle();
+      return;
+    }
+    if (e.key === ' ' || e.code === 'Space') {
+      const isInput = e.target && (
+        e.target.matches('input,textarea') ||
+        e.target.matches('select,[contenteditable="true"]') ||
+        e.target.isContentEditable
+      );
+      if (!isInput) {
+        e.preventDefault();
+        toggleAutoRotate();
+      }
+      return;
+    }
+    if (e.key === 'Escape') {
+      closeAllDrawers();
+    }
+  });
 }
 
 // ── Toast Notification ───────────────────────────────────────────────────────

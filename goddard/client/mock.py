@@ -187,6 +187,146 @@ class MockResponse:
         return json.loads(self.text)
 
 
+def generate_procedural_rocket_step(
+    output_path: str | pathlib.Path | None = None,
+    body_radius: float = 0.15,
+    body_length: float = 2.5,
+    nose_length: float = 0.7,
+    num_engines: int = 1,
+    has_fins: bool = True,
+) -> bytes:
+    """
+    Procedurally generates a complete aerospace rocket solid (fuselage cylinder,
+    aerodynamic tangent nose cone, convergent-divergent nozzle bell cluster, and
+    4 stabilizing trapezoidal fins) using Gmsh OpenCASCADE.
+    Exports valid ISO 10303-21 AP214 STEP format.
+    Falls back gracefully to MINIMAL_STEP_STRING if Gmsh is unavailable.
+    """
+    try:
+        import math
+        import tempfile
+
+        import gmsh
+
+        gmsh.initialize()
+        try:
+            gmsh.option.setNumber("General.Terminal", 0)
+            gmsh.model.add("procedural_rocket")
+
+            # 1. Fuselage
+            cyl = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, body_length, body_radius)
+
+            # 2. Nose cone
+            cone = gmsh.model.occ.addCone(
+                0, 0, body_length, 0, 0, nose_length, body_radius, max(0.005, body_radius * 0.05)
+            )
+
+            # 3. Engine cluster
+            nozzles = []
+            if num_engines == 1:
+                n_len = max(0.2, body_radius * 0.8)
+                nz = gmsh.model.occ.addCone(0, 0, 0, 0, 0, -n_len, body_radius * 0.25, body_radius * 0.55)
+                nozzles.append(nz)
+            elif num_engines == 9:
+                n_len = body_radius * 0.75
+                r_exit = body_radius * 0.22
+                r_th = body_radius * 0.11
+                nozzles.append(gmsh.model.occ.addCone(0, 0, 0, 0, 0, -n_len, r_th, r_exit))
+                ring_r = body_radius * 0.62
+                for i in range(8):
+                    ang = i * (2.0 * math.pi / 8.0)
+                    cx = ring_r * math.cos(ang)
+                    cy = ring_r * math.sin(ang)
+                    nozzles.append(gmsh.model.occ.addCone(cx, cy, 0, 0, 0, -n_len, r_th, r_exit))
+            elif num_engines >= 30:
+                n_len = body_radius * 0.65
+                r_exit = body_radius * 0.12
+                r_th = body_radius * 0.06
+                for i in range(3):
+                    ang = i * (2.0 * math.pi / 3.0)
+                    nozzles.append(
+                        gmsh.model.occ.addCone(
+                            body_radius * 0.2 * math.cos(ang),
+                            body_radius * 0.2 * math.sin(ang),
+                            0,
+                            0,
+                            0,
+                            -n_len,
+                            r_th,
+                            r_exit,
+                        )
+                    )
+                for i in range(10):
+                    ang = i * (2.0 * math.pi / 10.0)
+                    nozzles.append(
+                        gmsh.model.occ.addCone(
+                            body_radius * 0.5 * math.cos(ang),
+                            body_radius * 0.5 * math.sin(ang),
+                            0,
+                            0,
+                            0,
+                            -n_len,
+                            r_th,
+                            r_exit,
+                        )
+                    )
+                for i in range(20):
+                    ang = i * (2.0 * math.pi / 20.0)
+                    nozzles.append(
+                        gmsh.model.occ.addCone(
+                            body_radius * 0.82 * math.cos(ang),
+                            body_radius * 0.82 * math.sin(ang),
+                            0,
+                            0,
+                            0,
+                            -n_len,
+                            r_th,
+                            r_exit,
+                        )
+                    )
+            else:
+                n_len = max(0.2, body_radius * 0.8)
+                nz = gmsh.model.occ.addCone(0, 0, 0, 0, 0, -n_len, body_radius * 0.25, body_radius * 0.55)
+                nozzles.append(nz)
+
+            # 4. Aerodynamic fins
+            fins = []
+            if has_fins:
+                fin_span = body_radius * 1.5
+                fin_chord = body_radius * 2.0
+                fin_t = max(0.012, body_radius * 0.08)
+                for i in range(4):
+                    ang = i * (math.pi / 2.0)
+                    bx = gmsh.model.occ.addBox(0, -fin_t / 2, 0, body_radius + fin_span, fin_t, fin_chord)
+                    gmsh.model.occ.rotate([(3, bx)], 0, 0, 0, 0, 0, 1, ang)
+                    fins.append(bx)
+
+            tool_solids = [(3, cone)] + [(3, n) for n in nozzles] + [(3, f) for f in fins]
+            gmsh.model.occ.fuse([(3, cyl)], tool_solids)
+            gmsh.model.occ.synchronize()
+
+            with tempfile.NamedTemporaryFile(suffix=".step", delete=False) as tmp:
+                tmp_path = pathlib.Path(tmp.name)
+            gmsh.write(str(tmp_path))
+            step_bytes = tmp_path.read_bytes()
+            tmp_path.unlink(missing_ok=True)
+
+            if output_path is not None:
+                p = pathlib.Path(output_path).resolve()
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_bytes(step_bytes)
+            return step_bytes
+        finally:
+            gmsh.finalize()
+    except Exception:
+        step_bytes = MINIMAL_STEP_STRING.encode("utf-8")
+        if output_path is not None:
+            p = pathlib.Path(output_path).resolve()
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(step_bytes)
+        return step_bytes
+
+
 class MockOnshapeClient:
     """
     Deterministic Mock of OnshapeClient.
@@ -460,7 +600,7 @@ class MockOnshapeClient:
 
     def export_step_string(self, *args: Any, **kwargs: Any) -> str:
         """Return AP214 STEP representation as string."""
-        return MINIMAL_STEP_STRING
+        return generate_procedural_rocket_step().decode("utf-8", errors="replace")
 
     def export_step(
         self,
@@ -471,12 +611,9 @@ class MockOnshapeClient:
         timeout: int = 120,
     ) -> bytes | str:
         """
-        Creates a minimal dummy STEP file or returns valid STEP bytes.
+        Creates a realistic procedural rocket STEP file or returns valid STEP bytes.
         """
-        step_bytes = MINIMAL_STEP_STRING.encode("utf-8")
+        step_bytes = generate_procedural_rocket_step(output_path=output_path)
         if output_path is not None:
-            p = pathlib.Path(output_path).resolve()
-            p.parent.mkdir(parents=True, exist_ok=True)
-            p.write_bytes(step_bytes)
-            return str(p)
+            return str(pathlib.Path(output_path).resolve())
         return step_bytes

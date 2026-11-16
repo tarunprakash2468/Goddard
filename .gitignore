@@ -64,6 +64,10 @@ coverage.xml
 *.cover
 .hypothesis/
 
+# Swift Package Manager Build Artefacts
+.build/
+macos/GoddardApp/.build/
+
 # Goddard Simulation & Design Artifacts
 artifacts/
 designs/rev_*/

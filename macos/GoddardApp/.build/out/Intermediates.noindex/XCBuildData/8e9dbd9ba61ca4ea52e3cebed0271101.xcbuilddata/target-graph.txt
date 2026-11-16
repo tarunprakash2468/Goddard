@@ -1,7 +1,0 @@
-Target dependency graph (3 targets)
-Target 'AllExcludingTests' in project 'Aggregate'
-➜ Explicit dependency on target 'GoddardApp-product' in project 'GoddardApp'
-➜ Explicit dependency on target 'GoddardApp_GoddardApp' in project 'GoddardApp'
-Target 'GoddardApp-product' in project 'GoddardApp'
-➜ Explicit dependency on target 'GoddardApp_GoddardApp' in project 'GoddardApp'
-Target 'GoddardApp_GoddardApp' in project 'GoddardApp' (no dependencies)
