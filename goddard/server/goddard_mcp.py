@@ -93,8 +93,9 @@ def _ensure_client() -> OnshapeClient | MockOnshapeClient:
     ak = os.getenv("ONSHAPE_ACCESS_KEY", ACCESS_KEY)
     sk = os.getenv("ONSHAPE_SECRET_KEY", SECRET_KEY)
     mock_flag = os.getenv("GODDARD_MOCK_ONSHAPE", "").lower() in ("1", "true", "yes")
+    offline_mode = os.getenv("GODDARD_OFFLINE_MODE", "").lower() in ("1", "true", "yes")
     if not ak or not sk or not DID or not WID or not PART_EID:
-        if mock_flag or not ak or not sk:
+        if mock_flag or offline_mode or not ak or not sk:
             return MockOnshapeClient()
         raise ValueError(
             "Onshape credentials or document IDs missing. Set GODDARD_MOCK_ONSHAPE=1 to use MockOnshapeClient."

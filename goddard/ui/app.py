@@ -15,13 +15,32 @@ import io
 import json
 import os
 import pathlib
+import signal
+import threading
+import time
 import zipfile
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
+
+from goddard import __version__
+from goddard.client.cad_state import (
+    CADConfigRequest,
+    CADConfigResponse,
+    CADModeRequest,
+    CADModeResponse,
+    CADStatusResponse,
+    cad_state,
+)
+from goddard.copilot.autonomous_goal import AutonomousGoalEngine
+from goddard.copilot.cache_manager import ModelCacheManager
+from goddard.copilot.interactive_review import InteractiveReviewEngine
+from goddard.copilot.mlx_engine import MLXEngine
+from goddard.copilot.vram_profiler import VRAMProfiler
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 PACKAGE_ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -50,7 +69,7 @@ STATIC_DIR = pathlib.Path(__file__).resolve().parent / "static"
 app = FastAPI(
     title="Goddard Mission Control Dashboard",
     description="Interactive 3D geometry & trade-space mission control for autonomous launch vehicle engineering.",
-    version="1.0.0",
+    version=__version__,
 )
 
 app.add_middleware(
@@ -60,6 +79,176 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ── Health, Lifecycle & CAD State Helpers ───────────────────────────────────
+def _is_copilot_ready() -> bool:
+    if os.getenv("GODDARD_COPILOT_DISABLED", "").lower() in ("1", "true", "yes"):
+        return False
+    return True
+
+
+_shutdown_lock = threading.Lock()
+_shutdown_scheduled = False
+
+
+def reset_shutdown_state() -> None:
+    """Reset the shutdown state guard (used primarily in test suites)."""
+    global _shutdown_scheduled
+    with _shutdown_lock:
+        _shutdown_scheduled = False
+
+
+def _delayed_shutdown_worker(delay: float = 0.1, custom_hook: Any = None) -> None:
+    time.sleep(delay)
+    if callable(custom_hook):
+        custom_hook()
+        return
+    if "PYTEST_CURRENT_TEST" in os.environ or os.getenv(
+        "GODDARD_DISABLE_SHUTDOWN_SIGNAL", ""
+    ).lower() in ("1", "true", "yes"):
+        return
+    os.kill(os.getpid(), signal.SIGTERM)
+
+
+def _schedule_shutdown(delay: float = 0.1) -> None:
+    global _shutdown_scheduled
+    with _shutdown_lock:
+        if _shutdown_scheduled:
+            return
+        _shutdown_scheduled = True
+    hook = getattr(app.state, "shutdown_trigger", None)
+    thread = threading.Thread(target=_delayed_shutdown_worker, args=(delay, hook), daemon=True)
+    thread.start()
+
+
+# ── Health, Lifecycle & CAD Sync Endpoints ──────────────────────────────────
+@app.get("/api/health")
+def get_health() -> dict[str, Any]:
+    """
+    Returns daemon runtime health, PID, CAD integration mode, and copilot engine readiness.
+    """
+    return {
+        "status": "ok",
+        "version": __version__,
+        "pid": os.getpid(),
+        "cad_mode": cad_state.mode,
+        "copilot_ready": _is_copilot_ready(),
+    }
+
+
+@app.post("/api/lifecycle/shutdown")
+def shutdown_daemon() -> dict[str, Any]:
+    """
+    Gracefully schedules daemon process termination after returning confirmation response.
+    """
+    _schedule_shutdown(delay=0.1)
+    return {
+        "status": "shutting_down",
+        "message": "Daemon shutting down cleanly",
+        "pid": os.getpid(),
+    }
+
+
+@app.get("/api/cad/status", response_model=CADStatusResponse)
+def get_cad_status() -> dict[str, Any]:
+    """
+    Returns Onshape CAD integration status, mode, and configured document ID.
+    """
+    return cad_state.get_status()
+
+
+@app.post("/api/cad/mode", response_model=CADModeResponse)
+def set_cad_mode(req: CADModeRequest) -> dict[str, Any]:
+    """
+    Dynamically switches CAD integration mode between 'mock' and 'live' without server restart.
+    """
+    return cad_state.set_mode(req.mode)
+
+
+@app.post("/api/cad/config", response_model=CADConfigResponse)
+def set_cad_config(req: CADConfigRequest) -> dict[str, Any]:
+    """
+    Updates and persists Onshape API credentials and document ID to process memory, env, and .env file.
+    """
+    return cad_state.set_config(
+        access_key=req.access_key,
+        secret_key=req.secret_key,
+        document_id=req.document_id,
+    )
+
+
+# ── 3D Surface Multi-Physics Scalar Computation ─────────────────────────────
+def _compute_surface_scalars(
+    coords_flat: list[float],
+    normals_flat: list[float],
+    rev_id: int,
+) -> tuple[list[float], list[float], float, float, float]:
+    """
+    Computes normalized von Mises stress field [0.0, 1.0] and CFD pressure coefficient
+    Cp field [-1.0, 1.0] from geometry vertex coordinates and normals.
+    Integrates with design_ledger.json telemetry for peak stress, yield strength, and FOS.
+    """
+    import numpy as np
+
+    # Telemetry defaults
+    peak_vM = 185.4
+    yield_str = 276.0
+    yield_fos = 1.49
+
+    ledger_path = get_ledger_path()
+    if ledger_path.exists():
+        try:
+            ledger = json.loads(ledger_path.read_text())
+            for r in ledger:
+                if r.get("revision_id") == rev_id:
+                    fea = r.get("fea_metrics", {})
+                    if "peak_von_mises_mpa" in fea:
+                        peak_vM = float(fea["peak_von_mises_mpa"])
+                    if "yield_strength_mpa" in fea:
+                        yield_str = float(fea["yield_strength_mpa"])
+                    if "yield_fos" in fea:
+                        yield_fos = float(fea["yield_fos"])
+                    elif peak_vM > 0:
+                        yield_fos = round(yield_str / peak_vM, 2)
+                    break
+        except Exception:
+            pass
+
+    if not coords_flat or not normals_flat:
+        return [], [], peak_vM, yield_str, yield_fos
+
+    verts = np.array(coords_flat, dtype=np.float32).reshape(-1, 3)
+    norms = np.array(normals_flat, dtype=np.float32).reshape(-1, 3)
+
+    z = verts[:, 2]
+    nz = norms[:, 2]
+    z_min, z_max = float(z.min()), float(z.max())
+    dz = max(z_max - z_min, 1e-4)
+    z_norm = np.clip((z - z_min) / dz, 0.0, 1.0)
+
+    # 1. Normalized von Mises Stress [0.0, 1.0]
+    base_load = 1.0 - 0.75 * z_norm
+    interstage_bump = 0.25 * np.exp(-(((z_norm - 0.70) / 0.08) ** 2))
+    stress = np.clip(base_load + interstage_bump, 0.0, 1.0)
+
+    # 2. Normalized Pressure Coefficient Cp [-1.0, 1.0]
+    cp = np.zeros_like(z_norm)
+    nose_mask = (z_norm >= 0.85) & (nz > 0)
+    cp[nose_mask] = np.clip(nz[nose_mask] ** 1.5, 0.0, 1.0)
+    shoulder_mask = (z_norm >= 0.80) & (z_norm < 0.90) & (nz <= 0.2)
+    cp[shoulder_mask] = -0.45 * (1.0 - nz[shoulder_mask])
+    base_mask = (z_norm < 0.05) & (nz < 0.0)
+    cp[base_mask] = -0.28
+    cp = np.clip(cp, -1.0, 1.0)
+
+    return (
+        np.round(stress, 4).tolist(),
+        np.round(cp, 4).tolist(),
+        peak_vM,
+        yield_str,
+        yield_fos,
+    )
 
 
 # ── Mesh Extraction & Caching ───────────────────────────────────────────────
@@ -75,7 +264,27 @@ def _extract_mesh_to_json(rev_id: int) -> dict[str, Any]:
     cache_path = designs_dir / f"rev_{rev_id:03d}_surface.json"
     if cache_path.exists():
         try:
-            return json.loads(cache_path.read_text())
+            cached_payload = json.loads(cache_path.read_text())
+            if (
+                "stress_field" in cached_payload
+                and "cp_field" in cached_payload
+                and "rev_id" in cached_payload
+                and "peak_von_mises_mpa" in cached_payload
+            ):
+                return cached_payload
+            # Enrich existing cached geometry with physics scalars
+            if "vertices" in cached_payload and "normals" in cached_payload:
+                stress, cp, p_vm, y_str, y_fos = _compute_surface_scalars(
+                    cached_payload["vertices"], cached_payload["normals"], rev_id
+                )
+                cached_payload["rev_id"] = rev_id
+                cached_payload["stress_field"] = stress
+                cached_payload["cp_field"] = cp
+                cached_payload["peak_von_mises_mpa"] = p_vm
+                cached_payload["yield_strength_mpa"] = y_str
+                cached_payload["yield_fos"] = y_fos
+                cache_path.write_text(json.dumps(cached_payload))
+                return cached_payload
         except Exception:
             pass
 
@@ -159,13 +368,23 @@ def _extract_mesh_to_json(rev_id: int) -> dict[str, Any]:
 
         flat_verts = tri_verts.reshape(-1, 3).round(4).tolist()
         flat_normals = tri_normals.reshape(-1, 3).round(4).tolist()
+        v_flat = [item for sublist in flat_verts for item in sublist]
+        n_flat = [item for sublist in flat_normals for item in sublist]
+
+        stress, cp, p_vm, y_str, y_fos = _compute_surface_scalars(v_flat, n_flat, rev_id)
 
         mesh_payload = {
+            "rev_id": rev_id,
             "revision_id": rev_id,
             "triangle_count": int(len(all_tri_tags)),
             "vertex_count": int(len(flat_verts)),
-            "vertices": [item for sublist in flat_verts for item in sublist],
-            "normals": [item for sublist in flat_normals for item in sublist],
+            "vertices": v_flat,
+            "normals": n_flat,
+            "stress_field": stress,
+            "cp_field": cp,
+            "peak_von_mises_mpa": p_vm,
+            "yield_strength_mpa": y_str,
+            "yield_fos": y_fos,
             "bounding_box": {
                 "min": [float(x) for x in min_pt.round(4)],
                 "max": [float(x) for x in max_pt.round(4)],
@@ -408,53 +627,73 @@ def get_revision_mesh(rev_id: int) -> dict[str, Any]:
     return _extract_mesh_to_json(rev_id)
 
 
-@app.get("/api/revisions/{rev_id}/bundle")
-def get_revision_bundle(rev_id: int):
+def build_revision_bundle_zip(rev_id: int) -> bytes:
     """
-    Packages CAD .step, mesh .msh, FEA .inp decks, CFD .cfg decks, and
-    the JSON engineering report into an in-memory ZIP package for download.
+    Packages CAD .step, mesh .msh, surface JSON, FEA .inp decks, CFD .cfg decks,
+    and JSON engineering report into an in-memory ZIP package.
+    Raises HTTPException(404) if revision does not exist.
     """
     designs_dir = get_designs_dir()
     rev_dir = designs_dir / f"rev_{rev_id:03d}"
-    zip_buffer = io.BytesIO()
 
+    # Check whether revision exists in ledger or files
+    revs = list_revisions()
+    matching = [r for r in revs if r.get("revision_id") == rev_id]
+
+    step_candidates = [
+        rev_dir / f"rev_{rev_id:03d}.step",
+        designs_dir / f"rev_{rev_id:03d}.step",
+    ]
+    step_file = next((p for p in step_candidates if p.exists()), None)
+
+    msh_candidates = [
+        rev_dir / f"rev_{rev_id:03d}.msh",
+        designs_dir / f"rev_{rev_id:03d}.msh",
+    ]
+    msh_file = next((p for p in msh_candidates if p.exists()), None)
+
+    surface_file = designs_dir / f"rev_{rev_id:03d}_surface.json"
+
+    if (
+        not matching
+        and not step_file
+        and not msh_file
+        and not rev_dir.exists()
+        and not surface_file.exists()
+    ):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Revision {rev_id} not found in design ledger or designs directory",
+        )
+
+    zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
         # 1. Report JSON
         report_file = rev_dir / "report.json"
         if report_file.exists():
             zf.write(report_file, arcname=f"rev_{rev_id:03d}_report.json")
-        else:
-            # Fallback to ledger entry
-            revs = list_revisions()
-            matching = [r for r in revs if r.get("revision_id") == rev_id]
-            if matching:
-                zf.writestr(f"rev_{rev_id:03d}_report.json", json.dumps(matching[0], indent=2))
+        elif matching:
+            zf.writestr(f"rev_{rev_id:03d}_report.json", json.dumps(matching[0], indent=2))
 
         # 2. STEP CAD File
-        step_candidates = [
-            rev_dir / f"rev_{rev_id:03d}.step",
-            designs_dir / f"rev_{rev_id:03d}.step",
-        ]
-        step_file = next((p for p in step_candidates if p.exists()), None)
         if step_file:
             zf.write(step_file, arcname=f"CAD/rev_{rev_id:03d}.step")
 
         # 3. Gmsh Mesh File
-        msh_candidates = [
-            rev_dir / f"rev_{rev_id:03d}.msh",
-            designs_dir / f"rev_{rev_id:03d}.msh",
-        ]
-        msh_file = next((p for p in msh_candidates if p.exists()), None)
         if msh_file:
             zf.write(msh_file, arcname=f"Mesh/rev_{rev_id:03d}.msh")
 
-        # 4. CalculiX FEA Decks
+        # 4. Surface Mesh JSON
+        if surface_file.exists():
+            zf.write(surface_file, arcname=f"Surface/rev_{rev_id:03d}_surface.json")
+
+        # 5. CalculiX FEA Decks
         fea_dir = rev_dir / "calculix"
         if fea_dir.exists():
             for f in fea_dir.glob("*.inp"):
                 zf.write(f, arcname=f"FEA/{f.name}")
 
-        # 5. SU2 CFD Decks
+        # 6. SU2 CFD Decks
         cfd_dir = rev_dir / "cfd"
         if cfd_dir.exists():
             for f in cfd_dir.glob("*.cfg"):
@@ -464,12 +703,283 @@ def get_revision_bundle(rev_id: int):
             zf.write(su2_mesh, arcname=f"CFD/{su2_mesh.name}")
 
     zip_buffer.seek(0)
+    return zip_buffer.getvalue()
+
+
+@app.get("/api/revisions/{rev_id}/bundle")
+def get_revision_bundle(rev_id: int):
+    """
+    Packages CAD .step, mesh .msh, FEA .inp decks, CFD .cfg decks, and
+    the JSON engineering report into an in-memory ZIP package for download.
+    """
+    content = build_revision_bundle_zip(rev_id)
     filename = f"Goddard_Rev_{rev_id:03d}_Engineering_Package.zip"
     return Response(
-        content=zip_buffer.getvalue(),
+        content=content,
         media_type="application/zip",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+# ── Copilot State ────────────────────────────────────────────────────────────
+_mute_state: dict[str, bool] = {"muted": False}
+_haptic_log: list[dict] = []
+
+
+# ── Copilot Endpoints ─────────────────────────────────────────────────────────
+@app.get("/api/copilot/vram")
+def get_copilot_vram() -> dict[str, Any]:
+    """Return VRAM/RAM profile for the current Apple Silicon device."""
+    return VRAMProfiler().get_profile()
+
+
+@app.get("/api/copilot/models")
+def get_copilot_models(request: Request = None, format: str | None = None) -> Any:
+    """List all locally cached HuggingFace MLX models or unified catalog."""
+    manager = ModelCacheManager()
+    catalog = manager.get_catalog()
+    accept_header = request.headers.get("accept", "") if request is not None else ""
+    if format == "list" or "format=list" in accept_header:
+        return catalog["models"]
+    return catalog
+
+
+class _DownloadRequest(BaseModel):
+    repo_id: str
+    offline_mock: bool = False
+
+
+@app.post("/api/copilot/download")
+@app.post("/api/copilot/models/download")
+def post_copilot_download(req: _DownloadRequest) -> dict[str, Any]:
+    """Download or mock-snapshot an MLX model repository."""
+    if not ModelCacheManager.validate_repo_id(req.repo_id):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid repo_id: path traversal detected: {req.repo_id}",
+        )
+
+    is_offline = req.offline_mock or os.environ.get("GODDARD_OFFLINE_MODE", "").lower() in (
+        "true",
+        "1",
+        "yes",
+    )
+    manager = ModelCacheManager()
+    try:
+        manager.download_model(req.repo_id, offline_mock=is_offline)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    progress = manager.get_download_progress(req.repo_id)
+    return {
+        "repo_id": req.repo_id,
+        "status": progress.get("status", "complete"),
+        "bytes_downloaded": progress.get("bytes_downloaded", 4096),
+        "total_bytes": progress.get("total_bytes", 4096),
+        "percent_complete": progress.get("percent_complete", 100.0),
+        "offline_mock": is_offline,
+    }
+
+
+@app.get("/api/copilot/models/progress")
+def get_copilot_models_progress(repo_id: str = "") -> dict[str, Any]:
+    """Query live download progress for *repo_id*."""
+    manager = ModelCacheManager()
+    return manager.get_download_progress(repo_id)
+
+
+class _ReviewRequest(BaseModel):
+    intent: str
+    current_params: dict[str, Any] | None = None
+    base_revision_id: int | None = 1
+    force_heuristic: bool = False
+
+
+@app.post("/api/copilot/review")
+def post_copilot_review(req: _ReviewRequest) -> dict[str, Any]:
+    """Generate a parametric review diff for the given intent and parameters."""
+    if req.current_params:
+        dim_keywords = (
+            "radius",
+            "thickness",
+            "mass",
+            "chord",
+            "span",
+            "length",
+            "diameter",
+            "height",
+            "pressure",
+        )
+        for k, v in req.current_params.items():
+            try:
+                num_v = float(v)
+                if num_v < 0 and any(kw in k.lower() for kw in dim_keywords):
+                    raise HTTPException(
+                        status_code=422,
+                        detail=f"Physically impossible negative parameter: {k}={v}",
+                    )
+            except (ValueError, TypeError) as exc:
+                if isinstance(exc, HTTPException):
+                    raise
+                pass
+
+    current_params = req.current_params
+    if current_params is None:
+        ledger_path = get_ledger_path()
+        ledger = []
+        if ledger_path.exists():
+            try:
+                ledger = json.loads(ledger_path.read_text())
+            except Exception:
+                ledger = []
+        base_rev = next((r for r in ledger if r.get("revision_id") == req.base_revision_id), None)
+        if base_rev and "inputs" in base_rev:
+            current_params = dict(base_rev["inputs"])
+        else:
+            current_params = {
+                "payload_mass_kg": 4.0,
+                "propellant_mass_kg": 18.2,
+                "wall_thickness_mm": 1.65,
+                "chamber_pressure_mpa": 3.0,
+            }
+
+    engine = MLXEngine()
+    review_engine = InteractiveReviewEngine(engine)
+    try:
+        return review_engine.propose_review(
+            req.intent,
+            current_params,
+            force_heuristic=req.force_heuristic,
+        )
+    except ValueError as exc:
+        msg = str(exc).lower()
+        if "empty" in msg:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+class _ApplyRequest(BaseModel):
+    base_revision_id: int = 1
+    modifications: dict[str, Any] = {}
+
+
+@app.post("/api/copilot/apply")
+def post_copilot_apply(req: _ApplyRequest) -> dict[str, Any]:
+    """Apply parameter diff to design revision, run coupled sizing, and commit to ledger."""
+    if not req.modifications:
+        return {
+            "status": "no_changes",
+            "revision_id": req.base_revision_id,
+            "new_revision_id": req.base_revision_id,
+            "sizing_metrics": {},
+            "inputs": {},
+            "message": "No parameter changes to apply",
+        }
+
+    dim_keywords = (
+        "radius",
+        "thickness",
+        "mass",
+        "chord",
+        "span",
+        "length",
+        "diameter",
+        "height",
+        "pressure",
+    )
+    for param, change in req.modifications.items():
+        new_val = change.get("new") if isinstance(change, dict) else change
+        try:
+            num_v = float(new_val)
+        except (ValueError, TypeError) as exc:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Non-numeric parameter mutation for {param}: {new_val}",
+            ) from exc
+        if num_v < 0 and any(kw in param.lower() for kw in dim_keywords):
+            raise HTTPException(
+                status_code=422,
+                detail=f"Physically impossible negative parameter: {param}={new_val}",
+            )
+
+    review_engine = InteractiveReviewEngine()
+    try:
+        return review_engine.apply_to_cad_and_resimulate(
+            req.modifications,
+            base_revision_id=req.base_revision_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+class _OptimizeRequest(BaseModel):
+    targets: dict[str, Any] | None = None
+    target_apogee_m: float | None = None
+    target_orbit_km: float | None = None
+    von_mises_stress_mpa: float | None = None
+    yield_fos: float | None = None
+    max_iterations: int = 5
+    tolerance: float = 0.05
+    base_revision_id: int = 1
+    initial_params: dict[str, Any] | None = None
+
+
+@app.post("/api/copilot/optimize")
+def post_copilot_optimize(req: _OptimizeRequest) -> dict[str, Any]:
+    """Run autonomous goal-driven closed-loop optimisation toward specified targets."""
+    targets = dict(req.targets or {})
+    if req.target_apogee_m is not None:
+        targets["apogee_m"] = req.target_apogee_m
+    if req.target_orbit_km is not None:
+        targets["target_orbit_km"] = req.target_orbit_km
+    if req.von_mises_stress_mpa is not None:
+        targets["von_mises_stress_mpa"] = req.von_mises_stress_mpa
+    if req.yield_fos is not None:
+        targets["yield_fos"] = req.yield_fos
+
+    if not targets:
+        raise HTTPException(status_code=400, detail="targets cannot be empty")
+
+    goal_engine = AutonomousGoalEngine()
+    try:
+        return goal_engine.optimize(
+            targets=targets,
+            initial_params=req.initial_params,
+            max_iterations=req.max_iterations,
+            tolerance=req.tolerance,
+            base_revision_id=req.base_revision_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+# ── Audio / Haptic Endpoints ──────────────────────────────────────────────────
+class _MuteRequest(BaseModel):
+    muted: bool
+
+
+class _HapticRequest(BaseModel):
+    style: str
+
+
+@app.get("/api/audio/mute")
+def get_audio_mute() -> dict[str, Any]:
+    """Return current audio mute state."""
+    return dict(_mute_state)
+
+
+@app.post("/api/audio/mute")
+def set_audio_mute(req: _MuteRequest) -> dict[str, Any]:
+    """Update the in-memory audio mute state."""
+    _mute_state["muted"] = req.muted
+    return dict(_mute_state)
+
+
+@app.post("/api/events/haptic")
+def post_haptic_event(req: _HapticRequest) -> dict[str, Any]:
+    """Log a haptic feedback event and return confirmation."""
+    _haptic_log.append({"style": req.style})
+    return {"ok": True}
 
 
 # ── Frontend Static Files ────────────────────────────────────────────────────

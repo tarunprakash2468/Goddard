@@ -1,0 +1,11 @@
+{
+  "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/DerivedSources/resource_bundle_accessor.swift" : {
+    "abi-baseline-json" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp.abi.json",
+    "const-values" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary.swiftconstvalues",
+    "dependencies" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary.d",
+    "diagnostics" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary.dia",
+    "swiftdoc" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp.swiftdoc",
+    "swiftmodule" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp.swiftmodule",
+    "swiftsourceinfo" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp.swiftsourceinfo"
+  }
+}

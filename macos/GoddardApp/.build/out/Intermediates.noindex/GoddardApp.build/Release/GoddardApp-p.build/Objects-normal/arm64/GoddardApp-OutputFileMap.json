@@ -1,0 +1,41 @@
+{
+  "" : {
+    "const-values" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary.swiftconstvalues",
+    "dependencies" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary.d",
+    "diagnostics" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary.dia",
+    "emit-module-dependencies" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary-emit-module.dia",
+    "pch" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/GoddardApp-primary.swiftdeps"
+  },
+  "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/DerivedSources/resource_bundle_accessor.swift" : {
+    "index-unit-output-path" : "/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "llvm-bc" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/resource_bundle_accessor.bc",
+    "object" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/resource_bundle_accessor.o"
+  },
+  "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/Sources/GoddardApp/AppDelegate.swift" : {
+    "index-unit-output-path" : "/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/AppDelegate.o",
+    "llvm-bc" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/AppDelegate.bc",
+    "object" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/AppDelegate.o"
+  },
+  "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/Sources/GoddardApp/BridgeHandler.swift" : {
+    "index-unit-output-path" : "/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/BridgeHandler.o",
+    "llvm-bc" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/BridgeHandler.bc",
+    "object" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/BridgeHandler.o"
+  },
+  "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/Sources/GoddardApp/DaemonManager.swift" : {
+    "index-unit-output-path" : "/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/DaemonManager.o",
+    "llvm-bc" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/DaemonManager.bc",
+    "object" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/DaemonManager.o"
+  },
+  "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/Sources/GoddardApp/MainWindowController.swift" : {
+    "index-unit-output-path" : "/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/MainWindowController.o",
+    "llvm-bc" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/MainWindowController.bc",
+    "object" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/MainWindowController.o"
+  },
+  "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/Sources/GoddardApp/main.swift" : {
+    "index-unit-output-path" : "/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/main.o",
+    "llvm-bc" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/main.bc",
+    "object" : "/Users/tarunprakash/Documents/GitHub/Goddard/macos/GoddardApp/.build/out/Intermediates.noindex/GoddardApp.build/Release/GoddardApp-p.build/Objects-normal/arm64/main.o"
+  }
+}

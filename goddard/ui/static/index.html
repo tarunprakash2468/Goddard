@@ -17,9 +17,13 @@
 
   <style>
     :root {
-      --bg-base: #080c14;
-      --bg-panel: rgba(13, 20, 36, 0.85);
-      --bg-card: rgba(22, 33, 56, 0.65);
+      --glass-bg: rgba(12, 18, 30, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-blur: blur(32px) saturate(200%);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --bg-base: transparent;
+      --bg-panel: rgba(13, 20, 36, 0.45);
+      --bg-card: rgba(22, 33, 56, 0.45);
       --bg-card-hover: rgba(30, 45, 77, 0.85);
       --border-subtle: rgba(255, 255, 255, 0.08);
       --border-active: #00e5ff;
@@ -42,7 +46,7 @@
     }
 
     body {
-      background-color: var(--bg-base);
+      background: transparent;
       color: var(--text-main);
       font-family: var(--font-sans);
       font-size: 13px;
@@ -277,13 +281,217 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* ── Center Viewport (3D Three.js) ───────────────────── */
+    /* ── Viewport Container ───────────────────────────────── */
+    html {
+      background: transparent;
+    }
+
+    body.mode-liquid-glass {
+      background: transparent;
+    }
+
+    body.mode-deep-space {
+      background: #080c14;
+    }
+
+    body.mode-cad-studio {
+      background: #222834;
+    }
+
     .viewport-container {
       position: relative;
-      background: radial-gradient(circle at 50% 50%, #0d1527 0%, #070a12 100%);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      background: transparent;
+      transition: background-color 0.3s ease;
+    }
+
+    .viewport-container.mode-liquid-glass {
+      background: transparent;
+    }
+
+    .viewport-container.mode-deep-space {
+      background: #080c14;
+    }
+
+    .viewport-container.mode-cad-studio {
+      background: #222834;
+    }
+
+    /* ── Floating 3D HUD Backdrop Mode Pill ─────────────────── */
+    .backdrop-pill {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      gap: 4px;
+      background: rgba(8, 12, 20, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 4px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .backdrop-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+    }
+
+    .backdrop-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .backdrop-btn.active {
+      background: rgba(0, 229, 255, 0.2);
+      border-color: rgba(0, 229, 255, 0.45);
+      color: #00e5ff;
+      font-weight: 600;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.25), inset 0 0 8px rgba(0, 229, 255, 0.10);
+    }
+
+    /* ── Floating Overlay Pill ─────────────────────────────── */
+    .overlay-pill {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      gap: 4px;
+      background: rgba(8, 12, 20, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 4px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .overlay-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .overlay-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .overlay-btn.active {
+      background: rgba(0, 229, 255, 0.2);
+      border-color: rgba(0, 229, 255, 0.45);
+      color: #00e5ff;
+      font-weight: 600;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+    }
+
+    /* ── Multi-Physics Legends & Colorbars ─────────────────── */
+    .physics-legend {
+      position: absolute;
+      left: 16px;
+      bottom: 80px;
+      z-index: 95;
+      padding: 12px 14px;
+      min-width: 180px;
+      background: rgba(8, 12, 20, 0.75);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      font-family: var(--font-mono);
+      pointer-events: auto;
+    }
+
+    .legend-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .legend-body {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .legend-colorbar {
+      width: 14px;
+      height: 120px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .colorbar-turbo {
+      background: linear-gradient(
+        to top,
+        #30123b 0%,
+        #4557c8 15%,
+        #2892eb 30%,
+        #1ee0b7 45%,
+        #a4fc3c 60%,
+        #fbe323 75%,
+        #fb8022 85%,
+        #d82613 95%,
+        #7a0403 100%
+      );
+    }
+
+    .colorbar-cp {
+      background: linear-gradient(
+        to top,
+        #1d4ed8 0%,
+        #38bdf8 30%,
+        #f8fafc 50%,
+        #f59e0b 75%,
+        #ef4444 100%
+      );
+    }
+
+    .legend-ticks {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-main);
+    }
+
+    .legend-footer {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 10px;
+      color: var(--text-dim);
     }
 
     #threejs-canvas {
@@ -530,6 +738,37 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* ── Liquid Glass ─────────────────────────────────────── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: 12px;
+    }
+
+    /* ── Backdrop / Overlay Pills ─────────────────────────── */
+    .backdrop-btn, .overlay-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      padding: 6px 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.2s ease;
+    }
+    .backdrop-btn.active, .overlay-btn.active {
+      background: rgba(0, 229, 255, 0.2);
+      color: #00e5ff;
+      font-weight: 600;
+    }
+
+    /* ── Drawers & Modals ─────────────────────────────────── */
+    .drawer.open { transform: translateX(0) !important; }
+    .modal.open { display: block !important; }
   </style>
 </head>
 <body>
@@ -564,7 +803,7 @@
   <div class="app-main">
 
     <!-- Left: Design Lineage Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar glass">
       <div class="panel-header">
         <div class="panel-title">DESIGN LINEAGE TIMELINE</div>
         <span id="rev-count-chip" class="status-badge" style="font-size: 10px;">0 REVS</span>
@@ -575,7 +814,52 @@
     </aside>
 
     <!-- Center: Interactive 3D Viewport -->
-    <main class="viewport-container">
+    <main class="viewport-container mode-liquid-glass">
+      <!-- Floating 3D HUD Backdrop Mode Pill -->
+      <div id="backdrop-mode-pill" class="backdrop-pill" role="tablist" aria-label="Backdrop Mode">
+        <button class="backdrop-btn active" data-mode="liquid-glass" data-alias="glass" onclick="setBackdropMode('liquid-glass')" role="tab" aria-selected="true" title="Authentic Desktop Blur Passthrough">🔮 Liquid Glass</button>
+        <button class="backdrop-btn" data-mode="deep-space" data-alias="space" onclick="setBackdropMode('deep-space')" role="tab" aria-selected="false" title="Deep Space Dark (#080c14)">🌌 Deep Space</button>
+        <button class="backdrop-btn" data-mode="cad-studio" data-alias="studio" onclick="setBackdropMode('cad-studio')" role="tab" aria-selected="false" title="CAD Studio Neutral (#222834)">🛸 CAD Studio</button>
+      </div>
+
+      <!-- Physics Overlay Toggle Pill -->
+      <div id="overlay-pill" class="overlay-pill" role="tablist" aria-label="Physics Overlays">
+        <button class="overlay-btn active" data-mode="solid" onclick="setOverlay('solid')">🚀 CAD Solid</button>
+        <button class="overlay-btn" data-mode="stress" onclick="setOverlay('stress')">🌡️ FEA Stress</button>
+        <button class="overlay-btn" data-mode="cp" onclick="setOverlay('cp')">💨 CFD Cp</button>
+        <button class="overlay-btn" data-mode="wireframe" onclick="setOverlay('wireframe')">🔧 Wireframe</button>
+      </div>
+
+      <!-- Floating Multi-Physics Colorbars & Legends -->
+      <div id="physics-legend" class="physics-legend glass" style="display:none;">
+        <div id="legend-title" class="legend-title">FEA VON MISES STRESS</div>
+        <div class="legend-body">
+          <div id="legend-colorbar" class="legend-colorbar"></div>
+          <div id="legend-ticks" class="legend-ticks"></div>
+        </div>
+        <div id="legend-footer" class="legend-footer"></div>
+      </div>
+
+      <div id="stress-legend" class="viewport-legend glass" style="display:none; position:absolute; bottom:140px; right:20px; z-index:100; padding:10px 14px; border-radius:12px; background:rgba(8,12,20,0.8); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.15); font-family:var(--font-mono); font-size:11px; color:#f1f5f9; min-width:180px;">
+        <div style="font-weight:600; margin-bottom:4px; color:#38bdf8;">FEA von Mises Stress</div>
+        <div class="legend-colorbar colorbar-turbo" style="height:10px; border-radius:4px; margin-bottom:6px; width:100%; background:linear-gradient(to right, #30123b, #4557c8, #2892eb, #1ee0b7, #a4fc3c, #fbe323, #fb8022, #d82613, #7a0403);"></div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8;">
+          <span>0 MPa</span>
+          <span id="legend-peak-stress">185.4 MPa</span>
+        </div>
+        <div id="legend-yield-fos" style="margin-top:4px; font-size:10px; color:#10b981; text-align:right;">Yield FoS: 1.49</div>
+      </div>
+
+      <div id="cp-legend" class="viewport-legend glass" style="display:none; position:absolute; bottom:140px; right:20px; z-index:100; padding:10px 14px; border-radius:12px; background:rgba(8,12,20,0.8); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.15); font-family:var(--font-mono); font-size:11px; color:#f1f5f9; min-width:180px;">
+        <div style="font-weight:600; margin-bottom:4px; color:#00e5ff;">CFD Surface Pressure Cp</div>
+        <div class="legend-colorbar colorbar-cp" style="height:10px; border-radius:4px; margin-bottom:6px; width:100%; background:linear-gradient(to right, #1d4ed8, #38bdf8, #f8fafc, #f59e0b, #ef4444);"></div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8;">
+          <span>-0.4 (Wake)</span>
+          <span>0.0</span>
+          <span>+1.0 (Stagn.)</span>
+        </div>
+      </div>
+
       <div id="threejs-canvas"></div>
 
       <div class="viewport-overlay">
@@ -589,6 +873,7 @@
         </div>
 
         <div class="viewport-controls">
+          <button id="btn-ghosting" class="btn-hud active" onclick="toggleRevisionGhosting()">👻 GHOST: ON</button>
           <button id="btn-shading-mode" class="btn-hud" onclick="toggleShadingMode()">SHADING: SOLID</button>
           <button id="btn-wireframe" class="btn-hud" onclick="toggleWireframe()">WIREFRAME</button>
           <button id="btn-autorotate" class="btn-hud" onclick="toggleAutoRotate()">AUTO-ROTATE</button>
@@ -598,7 +883,7 @@
     </main>
 
     <!-- Right: Requirements Matrix & Diff -->
-    <aside class="right-panel">
+    <aside class="right-panel glass">
       <div>
         <div class="section-title">
           <span>REQUIREMENT COMPLIANCE</span>
@@ -669,6 +954,23 @@
       </div>
     </div>
   </footer>
+
+  <!-- MLX Copilot Drawer -->
+  <div id="copilot-drawer" class="drawer glass" style="position:fixed;right:0;top:0;bottom:0;width:360px;z-index:1000;padding:20px;transform:translateX(100%);transition:transform 0.3s ease;overflow-y:auto;">
+    <h3 style="color:#00e5ff;margin-bottom:16px;">🤖 MLX Copilot</h3>
+    <div id="copilot-model-info" style="margin-bottom:16px;font-size:12px;color:#94a3b8;"></div>
+    <textarea id="copilot-intent" placeholder="Enter engineering goal..." style="width:100%;height:80px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);color:#f1f5f9;border-radius:8px;padding:10px;font-size:13px;resize:none;"></textarea>
+    <button onclick="submitCopilotReview()" style="margin-top:10px;width:100%;background:rgba(0,229,255,0.15);border:1px solid #00e5ff;color:#00e5ff;padding:10px;border-radius:8px;cursor:pointer;font-size:13px;">Propose Design Changes</button>
+    <div id="copilot-diff-output" style="margin-top:16px;font-size:12px;"></div>
+    <button id="apply-diff-btn" onclick="applyProposedDiff()" style="display:none;margin-top:10px;width:100%;background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#10b981;padding:10px;border-radius:8px;cursor:pointer;font-size:13px;">✅ Apply to CAD &amp; Re-Simulate</button>
+  </div>
+
+  <!-- Revision Diff Modal -->
+  <div id="diff-modal" class="modal glass" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2000;padding:24px;min-width:400px;max-width:600px;">
+    <h3 style="color:#00e5ff;">Revision Comparison</h3>
+    <div id="diff-content" style="margin-top:16px;font-size:12px;"></div>
+    <button onclick="closeAllDrawers()" style="margin-top:16px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#94a3b8;padding:8px 24px;border-radius:8px;cursor:pointer;">Close</button>
+  </div>
 
   <script src="/static/app.js"></script>
 </body>

@@ -2554,5 +2554,3569 @@
       "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_011/rev_011.msh",
       "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_011"
     }
+  },
+  {
+    "revision_id": 12,
+    "timestamp": "2026-11-16T05:01:19.558545+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 80.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_012/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_012/rocket_solid.step",
+      "msh": "designs/rev_012/airframe.msh",
+      "report_json": "designs/rev_012/report.json"
+    }
+  },
+  {
+    "revision_id": 13,
+    "timestamp": "2026-11-16T06:02:50.989110+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 80.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_013/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_013/rocket_solid.step",
+      "msh": "designs/rev_013/airframe.msh",
+      "report_json": "designs/rev_013/report.json"
+    }
+  },
+  {
+    "revision_id": 14,
+    "timestamp": "2026-11-16T11:41:13.039365+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "mission_profile": "orbital_insertion",
+      "stage_count": 2,
+      "stabilization_mode": "tvc_guided",
+      "launch_mode": "vertical_pad",
+      "feed_architecture": "pump_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/RP1",
+      "structural_material": "Al-Li-2195",
+      "dfm_mode": "custom_machined",
+      "engine_count_stage1": 9,
+      "reusable_booster": true,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 15000.0,
+      "target_orbit_km": 400.0,
+      "body_radius_m": 1.85,
+      "body_length_m": 42.0,
+      "stage2_length_m": 12.0,
+      "stage2_radius_m": 1.85,
+      "interstage_length_m": 3.0,
+      "nose_length_m": 6.5,
+      "has_fins": false,
+      "fin_count": 0,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 162.0,
+      "ballast_mass_kg": 10.18,
+      "wall_thickness_mm": 4.65
+    },
+    "sizing_metrics": {
+      "mission_profile": "orbital_insertion",
+      "propellant": "LOX/RP1",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pump_fed",
+      "structural_material": "Al-Li-2195",
+      "material_properties": {
+        "density_kg_m3": 2710.0,
+        "yield_strength_pa": 550000000.0,
+        "ultimate_strength_pa": 590000000.0,
+        "shear_modulus_pa": 28000000000.0,
+        "youngs_modulus_pa": 76000000000.0,
+        "poisson_ratio": 0.32
+      },
+      "stage_count": 2,
+      "total_delta_v_ms": 9200.0,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 3400.0,
+          "isp_s": 275.0,
+          "burn_time_s": 162.0,
+          "total_thrust_n": 8058243.1,
+          "engine_count": 9,
+          "thrust_per_engine_n": 895360.3,
+          "propellant_mass_kg": 517947.556,
+          "ascent_propellant_kg": 484063.136,
+          "landing_propellant_kg": 33884.42,
+          "ox_mass_kg": 374073.235,
+          "fuel_mass_kg": 143874.321,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 6.781,
+          "tank_length_m": 51.712,
+          "stage_length_m": 52.112,
+          "stage_dry_mass_kg": 24677.63,
+          "stage_wet_mass_kg": 542625.19,
+          "pressurization_mode": "helium",
+          "reusable_booster": true,
+          "nozzle": {
+            "throat_radius_mm": 189.12,
+            "exit_radius_mm": 655.11,
+            "nozzle_length_mm": 1739.13,
+            "expansion_ratio": 12.0
+          }
+        },
+        {
+          "stage_index": 2,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": true,
+          "delta_v_delivered_ms": 5800.0,
+          "isp_s": 315.0,
+          "burn_time_s": 360.0,
+          "total_thrust_n": 1279661.2,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1279661.2,
+          "propellant_mass_kg": 149130.427,
+          "ascent_propellant_kg": 149130.427,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 107705.309,
+          "fuel_mass_kg": 41425.119,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 2.702,
+          "tank_length_m": 14.889,
+          "stage_length_m": 15.089,
+          "stage_dry_mass_kg": 3622.81,
+          "stage_wet_mass_kg": 152753.24,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 211.24,
+            "exit_radius_mm": 1889.43,
+            "nozzle_length_mm": 6263.07,
+            "expansion_ratio": 80.0
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 1.85,
+        "body_length_m": 42.0,
+        "nose_length_m": 6.5,
+        "stage2_length_m": 15.089,
+        "stage2_radius_m": 1.85,
+        "interstage_length_m": 3.0,
+        "total_length_m": 66.589,
+        "has_fins": false,
+        "engine_count_stage1": 9
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 15000.0,
+        "stage_1_dry_kg": 24677.63,
+        "stage_1_prop_kg": 517947.556,
+        "stage_2_dry_kg": 3622.81,
+        "stage_2_prop_kg": 149130.427,
+        "total_dry_mass_kg": 43300.44,
+        "total_propellant_mass_kg": 667077.98,
+        "total_wet_mass_kg": 542625.19
+      },
+      "stability": {
+        "stabilization_mode": "tvc_guided",
+        "fin_count": 0,
+        "max_q_pitch_moment_nm": 643297.3,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.16,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.84,
+        "tvc_authority_passed": true
+      }
+    },
+    "cad_metrics": {
+      "step_path": "designs/rev_014/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 143499027.6,
+      "peak_von_mises_mpa": 143.5,
+      "sigma_axial_mpa": 149.1,
+      "sigma_hoop_mpa": 137.15,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 1.92,
+      "fos": 1.92,
+      "blf": 1.88,
+      "buckling_load_factor_blf": 1.88,
+      "stress_passed": false,
+      "buckling_passed": false
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 400000.0,
+      "max_velocity_ms": 4588.3,
+      "max_mach": 14.34,
+      "max_acceleration_ms2": 178.6,
+      "max_dynamic_pressure_pa": 35912.8,
+      "flight_time_s": 5584.0,
+      "rail_exit_velocity_ms": 0.0,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 162.0,
+          "burnout_altitude_m": 183301.6,
+          "burnout_velocity_ms": 5222.4,
+          "burnout_vz_ms": 4066.0
+        },
+        {
+          "stage": 2,
+          "burnout_time_s": 184.0,
+          "burnout_altitude_m": 280236.0,
+          "burnout_velocity_ms": 6860.3
+        }
+      ],
+      "tvc_metrics": {
+        "tvc_enabled": true,
+        "max_q_pitch_moment_nm": 355424.8,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.09,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.91,
+        "tvc_authority_passed": true
+      },
+      "static_margin_calibers": {
+        "rail_departure": null,
+        "burnout": null,
+        "min_margin": null,
+        "mode": "tvc_active_gimbal"
+      },
+      "recovery": {
+        "dual_deploy_enabled": false,
+        "drogue_deployed": false,
+        "main_deployed": false
+      }
+    },
+    "artifacts": {
+      "step": "designs/rev_014/rocket_solid.step",
+      "msh": "designs/rev_014/airframe.msh",
+      "report_json": "designs/rev_014/report.json"
+    }
+  },
+  {
+    "revision_id": 15,
+    "timestamp": "2026-11-16T11:42:20.926239+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_015/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_015/rocket_solid.step",
+      "msh": "designs/rev_015/airframe.msh",
+      "report_json": "designs/rev_015/report.json"
+    }
+  },
+  {
+    "revision_id": 16,
+    "timestamp": "2026-11-16T11:42:22.978534+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_016/rev_016.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_016/rev_016.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_016/rev_016.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_016"
+    }
+  },
+  {
+    "revision_id": 17,
+    "timestamp": "2026-11-16T11:42:25.852615+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_017/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_017/rocket_solid.step",
+      "msh": "designs/rev_017/airframe.msh",
+      "report_json": "designs/rev_017/report.json"
+    }
+  },
+  {
+    "revision_id": 18,
+    "timestamp": "2026-11-16T11:42:39.848931+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_018/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_018/rocket_solid.step",
+      "msh": "designs/rev_018/airframe.msh",
+      "report_json": "designs/rev_018/report.json"
+    }
+  },
+  {
+    "revision_id": 19,
+    "timestamp": "2026-11-16T11:42:47.362348+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_019/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_019/rocket_solid.step",
+      "msh": "designs/rev_019/airframe.msh",
+      "report_json": "designs/rev_019/report.json"
+    }
+  },
+  {
+    "revision_id": 20,
+    "timestamp": "2026-11-16T11:43:35.478153+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_020/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_020/rocket_solid.step",
+      "msh": "designs/rev_020/airframe.msh",
+      "report_json": "designs/rev_020/report.json"
+    }
+  },
+  {
+    "revision_id": 21,
+    "timestamp": "2026-11-16T11:43:37.561335+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_021/rev_021.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_021/rev_021.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_021/rev_021.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_021"
+    }
+  },
+  {
+    "revision_id": 22,
+    "timestamp": "2026-11-16T11:43:45.279244+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_022/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_022/rocket_solid.step",
+      "msh": "designs/rev_022/airframe.msh",
+      "report_json": "designs/rev_022/report.json"
+    }
+  },
+  {
+    "revision_id": 23,
+    "timestamp": "2026-11-16T11:44:12.485560+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_023/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_023/rocket_solid.step",
+      "msh": "designs/rev_023/airframe.msh",
+      "report_json": "designs/rev_023/report.json"
+    }
+  },
+  {
+    "revision_id": 24,
+    "timestamp": "2026-11-16T11:45:12.834087+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_024/rev_024.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_024/rev_024.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_024/rev_024.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_024"
+    }
+  },
+  {
+    "revision_id": 25,
+    "timestamp": "2026-11-16T11:46:41.971551+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_025/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_025/rocket_solid.step",
+      "msh": "designs/rev_025/airframe.msh",
+      "report_json": "designs/rev_025/report.json"
+    }
+  },
+  {
+    "revision_id": 26,
+    "timestamp": "2026-11-16T11:46:44.157734+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_026/rev_026.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_026/rev_026.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_026/rev_026.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_026"
+    }
+  },
+  {
+    "revision_id": 27,
+    "timestamp": "2026-11-16T11:48:01.936352+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_027/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_027/rocket_solid.step",
+      "msh": "designs/rev_027/airframe.msh",
+      "report_json": "designs/rev_027/report.json"
+    }
+  },
+  {
+    "revision_id": 28,
+    "timestamp": "2026-11-16T11:48:04.160680+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_028/rev_028.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_028/rev_028.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_028/rev_028.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_028"
+    }
+  },
+  {
+    "revision_id": 29,
+    "timestamp": "2026-11-16T11:48:42.789668+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_029/rev_029.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_029/rev_029.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_029/rev_029.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_029"
+    }
+  },
+  {
+    "revision_id": 30,
+    "timestamp": "2026-11-16T11:49:27.879359+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_030/rev_030.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_030/rev_030.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_030/rev_030.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_030"
+    }
+  },
+  {
+    "revision_id": 31,
+    "timestamp": "2026-11-16T11:49:33.202947+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_031/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_031/rocket_solid.step",
+      "msh": "designs/rev_031/airframe.msh",
+      "report_json": "designs/rev_031/report.json"
+    }
+  },
+  {
+    "revision_id": 32,
+    "timestamp": "2026-11-16T11:49:47.466326+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_032/rev_032.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_032/rev_032.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_032/rev_032.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_032"
+    }
+  },
+  {
+    "revision_id": 33,
+    "timestamp": "2026-11-16T11:50:30.335103+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_033/rev_033.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_033/rev_033.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_033/rev_033.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_033"
+    }
+  },
+  {
+    "revision_id": 34,
+    "timestamp": "2026-11-16T11:50:33.856356+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_034/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_034/rocket_solid.step",
+      "msh": "designs/rev_034/airframe.msh",
+      "report_json": "designs/rev_034/report.json"
+    }
+  },
+  {
+    "revision_id": 35,
+    "timestamp": "2026-11-16T11:50:36.079275+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_035/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_035/rocket_solid.step",
+      "msh": "designs/rev_035/airframe.msh",
+      "report_json": "designs/rev_035/report.json"
+    }
+  },
+  {
+    "revision_id": 36,
+    "timestamp": "2026-11-16T11:56:35.936311+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_036/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_036/rocket_solid.step",
+      "msh": "designs/rev_036/airframe.msh",
+      "report_json": "designs/rev_036/report.json"
+    }
+  },
+  {
+    "revision_id": 37,
+    "timestamp": "2026-11-16T11:57:15.286705+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "mission_profile": "orbital_insertion",
+      "stage_count": 2,
+      "stabilization_mode": "tvc_guided",
+      "launch_mode": "vertical_pad",
+      "feed_architecture": "pump_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/RP1",
+      "structural_material": "Al-Li-2195",
+      "dfm_mode": "custom_machined",
+      "engine_count_stage1": 9,
+      "reusable_booster": true,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 15000.0,
+      "target_orbit_km": 400.0,
+      "body_radius_m": 1.85,
+      "body_length_m": 42.0,
+      "stage2_length_m": 12.0,
+      "stage2_radius_m": 1.85,
+      "interstage_length_m": 3.0,
+      "nose_length_m": 6.5,
+      "has_fins": false,
+      "fin_count": 0,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 162.0,
+      "ballast_mass_kg": 10.18,
+      "wall_thickness_mm": 4.65
+    },
+    "sizing_metrics": {
+      "mission_profile": "orbital_insertion",
+      "propellant": "LOX/RP1",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pump_fed",
+      "structural_material": "Al-Li-2195",
+      "material_properties": {
+        "density_kg_m3": 2710.0,
+        "yield_strength_pa": 550000000.0,
+        "ultimate_strength_pa": 590000000.0,
+        "shear_modulus_pa": 28000000000.0,
+        "youngs_modulus_pa": 76000000000.0,
+        "poisson_ratio": 0.32
+      },
+      "stage_count": 2,
+      "total_delta_v_ms": 9200.0,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 3400.0,
+          "isp_s": 275.0,
+          "burn_time_s": 162.0,
+          "total_thrust_n": 8058243.1,
+          "engine_count": 9,
+          "thrust_per_engine_n": 895360.3,
+          "propellant_mass_kg": 517947.556,
+          "ascent_propellant_kg": 484063.136,
+          "landing_propellant_kg": 33884.42,
+          "ox_mass_kg": 374073.235,
+          "fuel_mass_kg": 143874.321,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 6.781,
+          "tank_length_m": 51.712,
+          "stage_length_m": 52.112,
+          "stage_dry_mass_kg": 24677.63,
+          "stage_wet_mass_kg": 542625.19,
+          "pressurization_mode": "helium",
+          "reusable_booster": true,
+          "nozzle": {
+            "throat_radius_mm": 189.12,
+            "exit_radius_mm": 655.11,
+            "nozzle_length_mm": 1739.13,
+            "expansion_ratio": 12.0
+          }
+        },
+        {
+          "stage_index": 2,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": true,
+          "delta_v_delivered_ms": 5800.0,
+          "isp_s": 315.0,
+          "burn_time_s": 360.0,
+          "total_thrust_n": 1279661.2,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1279661.2,
+          "propellant_mass_kg": 149130.427,
+          "ascent_propellant_kg": 149130.427,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 107705.309,
+          "fuel_mass_kg": 41425.119,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 2.702,
+          "tank_length_m": 14.889,
+          "stage_length_m": 15.089,
+          "stage_dry_mass_kg": 3622.81,
+          "stage_wet_mass_kg": 152753.24,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 211.24,
+            "exit_radius_mm": 1889.43,
+            "nozzle_length_mm": 6263.07,
+            "expansion_ratio": 80.0
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 1.85,
+        "body_length_m": 42.0,
+        "nose_length_m": 6.5,
+        "stage2_length_m": 15.089,
+        "stage2_radius_m": 1.85,
+        "interstage_length_m": 3.0,
+        "total_length_m": 66.589,
+        "has_fins": false,
+        "engine_count_stage1": 9
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 15000.0,
+        "stage_1_dry_kg": 24677.63,
+        "stage_1_prop_kg": 517947.556,
+        "stage_2_dry_kg": 3622.81,
+        "stage_2_prop_kg": 149130.427,
+        "total_dry_mass_kg": 43300.44,
+        "total_propellant_mass_kg": 667077.98,
+        "total_wet_mass_kg": 542625.19
+      },
+      "stability": {
+        "stabilization_mode": "tvc_guided",
+        "fin_count": 0,
+        "max_q_pitch_moment_nm": 643297.3,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.16,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.84,
+        "tvc_authority_passed": true
+      }
+    },
+    "cad_metrics": {
+      "step_path": "designs/rev_037/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 143499027.6,
+      "peak_von_mises_mpa": 143.5,
+      "sigma_axial_mpa": 149.1,
+      "sigma_hoop_mpa": 137.15,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 1.92,
+      "fos": 1.92,
+      "blf": 1.88,
+      "buckling_load_factor_blf": 1.88,
+      "stress_passed": false,
+      "buckling_passed": false
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 400000.0,
+      "max_velocity_ms": 4588.3,
+      "max_mach": 14.34,
+      "max_acceleration_ms2": 178.6,
+      "max_dynamic_pressure_pa": 35912.8,
+      "flight_time_s": 5584.0,
+      "rail_exit_velocity_ms": 0.0,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 162.0,
+          "burnout_altitude_m": 183301.6,
+          "burnout_velocity_ms": 5222.4,
+          "burnout_vz_ms": 4066.0
+        },
+        {
+          "stage": 2,
+          "burnout_time_s": 184.0,
+          "burnout_altitude_m": 280236.0,
+          "burnout_velocity_ms": 6860.3
+        }
+      ],
+      "tvc_metrics": {
+        "tvc_enabled": true,
+        "max_q_pitch_moment_nm": 355424.8,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.09,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.91,
+        "tvc_authority_passed": true
+      },
+      "static_margin_calibers": {
+        "rail_departure": null,
+        "burnout": null,
+        "min_margin": null,
+        "mode": "tvc_active_gimbal"
+      },
+      "recovery": {
+        "dual_deploy_enabled": false,
+        "drogue_deployed": false,
+        "main_deployed": false
+      }
+    },
+    "artifacts": {
+      "step": "designs/rev_037/rocket_solid.step",
+      "msh": "designs/rev_037/airframe.msh",
+      "report_json": "designs/rev_037/report.json"
+    }
+  },
+  {
+    "revision_id": 38,
+    "timestamp": "2026-11-16T11:57:20.214752+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_038/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_038/rocket_solid.step",
+      "msh": "designs/rev_038/airframe.msh",
+      "report_json": "designs/rev_038/report.json"
+    }
+  },
+  {
+    "revision_id": 39,
+    "timestamp": "2026-11-16T11:58:08.945545+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_039/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_039/rocket_solid.step",
+      "msh": "designs/rev_039/airframe.msh",
+      "report_json": "designs/rev_039/report.json"
+    }
+  },
+  {
+    "revision_id": 40,
+    "timestamp": "2026-11-16T11:58:38.916491+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "mission_profile": "orbital_insertion",
+      "stage_count": 2,
+      "stabilization_mode": "tvc_guided",
+      "launch_mode": "vertical_pad",
+      "feed_architecture": "pump_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/RP1",
+      "structural_material": "Al-Li-2195",
+      "dfm_mode": "custom_machined",
+      "engine_count_stage1": 9,
+      "reusable_booster": true,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 15000.0,
+      "target_orbit_km": 400.0,
+      "body_radius_m": 1.85,
+      "body_length_m": 42.0,
+      "stage2_length_m": 12.0,
+      "stage2_radius_m": 1.85,
+      "interstage_length_m": 3.0,
+      "nose_length_m": 6.5,
+      "has_fins": false,
+      "fin_count": 0,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 162.0,
+      "ballast_mass_kg": 10.18,
+      "wall_thickness_mm": 4.65
+    },
+    "sizing_metrics": {
+      "mission_profile": "orbital_insertion",
+      "propellant": "LOX/RP1",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pump_fed",
+      "structural_material": "Al-Li-2195",
+      "material_properties": {
+        "density_kg_m3": 2710.0,
+        "yield_strength_pa": 550000000.0,
+        "ultimate_strength_pa": 590000000.0,
+        "shear_modulus_pa": 28000000000.0,
+        "youngs_modulus_pa": 76000000000.0,
+        "poisson_ratio": 0.32
+      },
+      "stage_count": 2,
+      "total_delta_v_ms": 9200.0,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 3400.0,
+          "isp_s": 275.0,
+          "burn_time_s": 162.0,
+          "total_thrust_n": 8058243.1,
+          "engine_count": 9,
+          "thrust_per_engine_n": 895360.3,
+          "propellant_mass_kg": 517947.556,
+          "ascent_propellant_kg": 484063.136,
+          "landing_propellant_kg": 33884.42,
+          "ox_mass_kg": 374073.235,
+          "fuel_mass_kg": 143874.321,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 6.781,
+          "tank_length_m": 51.712,
+          "stage_length_m": 52.112,
+          "stage_dry_mass_kg": 24677.63,
+          "stage_wet_mass_kg": 542625.19,
+          "pressurization_mode": "helium",
+          "reusable_booster": true,
+          "nozzle": {
+            "throat_radius_mm": 189.12,
+            "exit_radius_mm": 655.11,
+            "nozzle_length_mm": 1739.13,
+            "expansion_ratio": 12.0
+          }
+        },
+        {
+          "stage_index": 2,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": true,
+          "delta_v_delivered_ms": 5800.0,
+          "isp_s": 315.0,
+          "burn_time_s": 360.0,
+          "total_thrust_n": 1279661.2,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1279661.2,
+          "propellant_mass_kg": 149130.427,
+          "ascent_propellant_kg": 149130.427,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 107705.309,
+          "fuel_mass_kg": 41425.119,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 2.702,
+          "tank_length_m": 14.889,
+          "stage_length_m": 15.089,
+          "stage_dry_mass_kg": 3622.81,
+          "stage_wet_mass_kg": 152753.24,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 211.24,
+            "exit_radius_mm": 1889.43,
+            "nozzle_length_mm": 6263.07,
+            "expansion_ratio": 80.0
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 1.85,
+        "body_length_m": 42.0,
+        "nose_length_m": 6.5,
+        "stage2_length_m": 15.089,
+        "stage2_radius_m": 1.85,
+        "interstage_length_m": 3.0,
+        "total_length_m": 66.589,
+        "has_fins": false,
+        "engine_count_stage1": 9
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 15000.0,
+        "stage_1_dry_kg": 24677.63,
+        "stage_1_prop_kg": 517947.556,
+        "stage_2_dry_kg": 3622.81,
+        "stage_2_prop_kg": 149130.427,
+        "total_dry_mass_kg": 43300.44,
+        "total_propellant_mass_kg": 667077.98,
+        "total_wet_mass_kg": 542625.19
+      },
+      "stability": {
+        "stabilization_mode": "tvc_guided",
+        "fin_count": 0,
+        "max_q_pitch_moment_nm": 643297.3,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.16,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.84,
+        "tvc_authority_passed": true
+      }
+    },
+    "cad_metrics": {
+      "step_path": "designs/rev_040/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 143499027.6,
+      "peak_von_mises_mpa": 143.5,
+      "sigma_axial_mpa": 149.1,
+      "sigma_hoop_mpa": 137.15,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 1.92,
+      "fos": 1.92,
+      "blf": 1.88,
+      "buckling_load_factor_blf": 1.88,
+      "stress_passed": false,
+      "buckling_passed": false
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 400000.0,
+      "max_velocity_ms": 4588.3,
+      "max_mach": 14.34,
+      "max_acceleration_ms2": 178.6,
+      "max_dynamic_pressure_pa": 35912.8,
+      "flight_time_s": 5584.0,
+      "rail_exit_velocity_ms": 0.0,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 162.0,
+          "burnout_altitude_m": 183301.6,
+          "burnout_velocity_ms": 5222.4,
+          "burnout_vz_ms": 4066.0
+        },
+        {
+          "stage": 2,
+          "burnout_time_s": 184.0,
+          "burnout_altitude_m": 280236.0,
+          "burnout_velocity_ms": 6860.3
+        }
+      ],
+      "tvc_metrics": {
+        "tvc_enabled": true,
+        "max_q_pitch_moment_nm": 355424.8,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.09,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.91,
+        "tvc_authority_passed": true
+      },
+      "static_margin_calibers": {
+        "rail_departure": null,
+        "burnout": null,
+        "min_margin": null,
+        "mode": "tvc_active_gimbal"
+      },
+      "recovery": {
+        "dual_deploy_enabled": false,
+        "drogue_deployed": false,
+        "main_deployed": false
+      }
+    },
+    "artifacts": {
+      "step": "designs/rev_040/rocket_solid.step",
+      "msh": "designs/rev_040/airframe.msh",
+      "report_json": "designs/rev_040/report.json"
+    }
+  },
+  {
+    "revision_id": 41,
+    "timestamp": "2026-11-16T11:59:28.562633+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "mission_profile": "orbital_insertion",
+      "stage_count": 2,
+      "stabilization_mode": "tvc_guided",
+      "launch_mode": "vertical_pad",
+      "feed_architecture": "pump_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/RP1",
+      "structural_material": "Al-Li-2195",
+      "dfm_mode": "custom_machined",
+      "engine_count_stage1": 9,
+      "reusable_booster": true,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 15000.0,
+      "target_orbit_km": 400.0,
+      "body_radius_m": 1.85,
+      "body_length_m": 42.0,
+      "stage2_length_m": 12.0,
+      "stage2_radius_m": 1.85,
+      "interstage_length_m": 3.0,
+      "nose_length_m": 6.5,
+      "has_fins": false,
+      "fin_count": 0,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 162.0,
+      "ballast_mass_kg": 10.18,
+      "wall_thickness_mm": 4.65
+    },
+    "sizing_metrics": {
+      "mission_profile": "orbital_insertion",
+      "propellant": "LOX/RP1",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pump_fed",
+      "structural_material": "Al-Li-2195",
+      "material_properties": {
+        "density_kg_m3": 2710.0,
+        "yield_strength_pa": 550000000.0,
+        "ultimate_strength_pa": 590000000.0,
+        "shear_modulus_pa": 28000000000.0,
+        "youngs_modulus_pa": 76000000000.0,
+        "poisson_ratio": 0.32
+      },
+      "stage_count": 2,
+      "total_delta_v_ms": 9200.0,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 3400.0,
+          "isp_s": 275.0,
+          "burn_time_s": 162.0,
+          "total_thrust_n": 8058243.1,
+          "engine_count": 9,
+          "thrust_per_engine_n": 895360.3,
+          "propellant_mass_kg": 517947.556,
+          "ascent_propellant_kg": 484063.136,
+          "landing_propellant_kg": 33884.42,
+          "ox_mass_kg": 374073.235,
+          "fuel_mass_kg": 143874.321,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 6.781,
+          "tank_length_m": 51.712,
+          "stage_length_m": 52.112,
+          "stage_dry_mass_kg": 24677.63,
+          "stage_wet_mass_kg": 542625.19,
+          "pressurization_mode": "helium",
+          "reusable_booster": true,
+          "nozzle": {
+            "throat_radius_mm": 189.12,
+            "exit_radius_mm": 655.11,
+            "nozzle_length_mm": 1739.13,
+            "expansion_ratio": 12.0
+          }
+        },
+        {
+          "stage_index": 2,
+          "body_radius_m": 1.85,
+          "is_vacuum_stage": true,
+          "delta_v_delivered_ms": 5800.0,
+          "isp_s": 315.0,
+          "burn_time_s": 360.0,
+          "total_thrust_n": 1279661.2,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1279661.2,
+          "propellant_mass_kg": 149130.427,
+          "ascent_propellant_kg": 149130.427,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 107705.309,
+          "fuel_mass_kg": 41425.119,
+          "tank_meop_psi": 50.0,
+          "tank_meop_pa": 344738.0,
+          "tank_wall_thickness_mm": 2.702,
+          "tank_length_m": 14.889,
+          "stage_length_m": 15.089,
+          "stage_dry_mass_kg": 3622.81,
+          "stage_wet_mass_kg": 152753.24,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 211.24,
+            "exit_radius_mm": 1889.43,
+            "nozzle_length_mm": 6263.07,
+            "expansion_ratio": 80.0
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 1.85,
+        "body_length_m": 42.0,
+        "nose_length_m": 6.5,
+        "stage2_length_m": 15.089,
+        "stage2_radius_m": 1.85,
+        "interstage_length_m": 3.0,
+        "total_length_m": 66.589,
+        "has_fins": false,
+        "engine_count_stage1": 9
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 15000.0,
+        "stage_1_dry_kg": 24677.63,
+        "stage_1_prop_kg": 517947.556,
+        "stage_2_dry_kg": 3622.81,
+        "stage_2_prop_kg": 149130.427,
+        "total_dry_mass_kg": 43300.44,
+        "total_propellant_mass_kg": 667077.98,
+        "total_wet_mass_kg": 542625.19
+      },
+      "stability": {
+        "stabilization_mode": "tvc_guided",
+        "fin_count": 0,
+        "max_q_pitch_moment_nm": 643297.3,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.16,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.84,
+        "tvc_authority_passed": true
+      }
+    },
+    "cad_metrics": {
+      "step_path": "designs/rev_041/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 143499027.6,
+      "peak_von_mises_mpa": 143.5,
+      "sigma_axial_mpa": 149.1,
+      "sigma_hoop_mpa": 137.15,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 1.92,
+      "fos": 1.92,
+      "blf": 1.88,
+      "buckling_load_factor_blf": 1.88,
+      "stress_passed": false,
+      "buckling_passed": false
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 400000.0,
+      "max_velocity_ms": 4588.3,
+      "max_mach": 14.34,
+      "max_acceleration_ms2": 178.6,
+      "max_dynamic_pressure_pa": 35912.8,
+      "flight_time_s": 5584.0,
+      "rail_exit_velocity_ms": 0.0,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 162.0,
+          "burnout_altitude_m": 183301.6,
+          "burnout_velocity_ms": 5222.4,
+          "burnout_vz_ms": 4066.0
+        },
+        {
+          "stage": 2,
+          "burnout_time_s": 184.0,
+          "burnout_altitude_m": 280236.0,
+          "burnout_velocity_ms": 6860.3
+        }
+      ],
+      "tvc_metrics": {
+        "tvc_enabled": true,
+        "max_q_pitch_moment_nm": 355424.8,
+        "gimbal_moment_arm_m": 27.97,
+        "gimbal_angle_required_deg": 0.09,
+        "max_allowable_gimbal_deg": 5.0,
+        "control_authority_margin_deg": 4.91,
+        "tvc_authority_passed": true
+      },
+      "static_margin_calibers": {
+        "rail_departure": null,
+        "burnout": null,
+        "min_margin": null,
+        "mode": "tvc_active_gimbal"
+      },
+      "recovery": {
+        "dual_deploy_enabled": false,
+        "drogue_deployed": false,
+        "main_deployed": false
+      }
+    },
+    "artifacts": {
+      "step": "designs/rev_041/rocket_solid.step",
+      "msh": "designs/rev_041/airframe.msh",
+      "report_json": "designs/rev_041/report.json"
+    }
+  },
+  {
+    "revision_id": 42,
+    "timestamp": "2026-11-16T12:09:05.950880+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_042/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_042/rocket_solid.step",
+      "msh": "designs/rev_042/airframe.msh",
+      "report_json": "designs/rev_042/report.json"
+    }
+  },
+  {
+    "revision_id": 43,
+    "timestamp": "2026-11-16T13:05:08.248296+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_043/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_043/rocket_solid.step",
+      "msh": "designs/rev_043/airframe.msh",
+      "report_json": "designs/rev_043/report.json"
+    }
+  },
+  {
+    "revision_id": 44,
+    "timestamp": "2026-11-16T13:15:19.944717+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_044/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_044/rocket_solid.step",
+      "msh": "designs/rev_044/airframe.msh",
+      "report_json": "designs/rev_044/report.json"
+    }
+  },
+  {
+    "revision_id": 45,
+    "timestamp": "2026-11-16T20:02:38.351610+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_045/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_045/rocket_solid.step",
+      "msh": "designs/rev_045/airframe.msh",
+      "report_json": "designs/rev_045/report.json"
+    }
+  },
+  {
+    "revision_id": 46,
+    "timestamp": "2026-11-16T20:03:54.682897+00:00",
+    "fidelity": "fast",
+    "rationale": "Autonomous Goal Mode multi-physics converged optimization",
+    "inputs": {
+      "propellant_mass_kg": 88.0
+    },
+    "sizing_metrics": {},
+    "cad_metrics": {
+      "step_path": "designs/rev_046/rocket_solid.step",
+      "onshape_document_id": "mock-doc-001",
+      "features_generated": 14
+    },
+    "fea_metrics": {},
+    "flight_metrics": {},
+    "artifacts": {
+      "step": "designs/rev_046/rocket_solid.step",
+      "msh": "designs/rev_046/airframe.msh",
+      "report_json": "designs/rev_046/report.json"
+    }
+  },
+  {
+    "revision_id": 47,
+    "timestamp": "2026-11-16T20:03:56.775861+00:00",
+    "fidelity": "fast",
+    "rationale": "Automated test revision",
+    "inputs": {
+      "mission_profile": "sounding_suborbital",
+      "stage_count": 1,
+      "stabilization_mode": "passive_fins",
+      "launch_mode": "rail",
+      "feed_architecture": "pressure_fed",
+      "propulsion_type": "liquid_biprop",
+      "propellant": "LOX/CH4",
+      "structural_material": "AL6061-T6",
+      "dfm_mode": "cots_stock",
+      "engine_count_stage1": 1,
+      "reusable_booster": false,
+      "pressurization_mode": "helium",
+      "payload_mass_kg": 4.0,
+      "target_orbit_km": null,
+      "body_radius_m": 0.0635,
+      "body_length_m": 1.2,
+      "stage2_length_m": 0.8,
+      "stage2_radius_m": 0.0635,
+      "interstage_length_m": 0.15,
+      "nose_length_m": 0.55,
+      "has_fins": true,
+      "fin_count": 4,
+      "fin_root_chord_m": 0.3,
+      "fin_tip_chord_m": 0.12,
+      "fin_span_m": 0.14,
+      "fin_thickness_m": 0.004,
+      "total_impulse_ns": 6500.0,
+      "burn_time_s": 3.5,
+      "ballast_mass_kg": 10.18
+    },
+    "sizing_metrics": {
+      "mission_profile": "sounding_suborbital",
+      "propellant": "LOX/CH4",
+      "propulsion_type": "liquid_biprop",
+      "feed_architecture": "pressure_fed",
+      "structural_material": "AL6061-T6",
+      "material_properties": {
+        "density_kg_m3": 2700.0,
+        "yield_strength_pa": 276000000.0,
+        "ultimate_strength_pa": 310000000.0,
+        "shear_modulus_pa": 26000000000.0,
+        "youngs_modulus_pa": 68900000000.0,
+        "poisson_ratio": 0.33
+      },
+      "stage_count": 1,
+      "total_delta_v_ms": 387.5,
+      "stages": [
+        {
+          "stage_index": 1,
+          "body_radius_m": 0.0635,
+          "is_vacuum_stage": false,
+          "delta_v_delivered_ms": 387.5,
+          "isp_s": 285.0,
+          "burn_time_s": 3.5,
+          "total_thrust_n": 1597.1,
+          "engine_count": 1,
+          "thrust_per_engine_n": 1597.1,
+          "propellant_mass_kg": 2.0,
+          "ascent_propellant_kg": 2.0,
+          "landing_propellant_kg": 0.0,
+          "ox_mass_kg": 1.524,
+          "fuel_mass_kg": 0.476,
+          "tank_meop_psi": 450.0,
+          "tank_meop_pa": 3102642.0,
+          "tank_wall_thickness_mm": 1.651,
+          "tank_length_m": 0.4,
+          "stage_length_m": 0.8,
+          "stage_dry_mass_kg": 5.69,
+          "stage_wet_mass_kg": 7.69,
+          "pressurization_mode": "helium",
+          "reusable_booster": false,
+          "nozzle": {
+            "throat_radius_mm": 12.51,
+            "exit_radius_mm": 43.07,
+            "nozzle_length_mm": 114.04,
+            "expansion_ratio": 11.8
+          }
+        }
+      ],
+      "geometry": {
+        "body_radius_m": 0.0635,
+        "body_length_m": 1.2,
+        "nose_length_m": 0.55,
+        "stage2_length_m": 0.0,
+        "stage2_radius_m": 0.0635,
+        "interstage_length_m": 0.0,
+        "total_length_m": 1.75,
+        "has_fins": true,
+        "engine_count_stage1": 1
+      },
+      "mass_breakdown": {
+        "payload_mass_kg": 4.0,
+        "stage_1_dry_kg": 5.69,
+        "stage_1_prop_kg": 2.0,
+        "stage_2_dry_kg": 0.0,
+        "stage_2_prop_kg": 0.0,
+        "total_dry_mass_kg": 9.69,
+        "total_propellant_mass_kg": 2.0,
+        "total_wet_mass_kg": 7.69
+      },
+      "stability": {
+        "stabilization_mode": "passive_fins",
+        "fin_count": 4,
+        "fin_flutter_velocity_ms": 2240841.8,
+        "flutter_safe_mach": 6590.71
+      }
+    },
+    "cad_metrics": {
+      "volume_m3": 0.022168,
+      "mass_kg": 3.111,
+      "structural_material": "AL6061-T6",
+      "apparent_density_kg_m3": 140.315,
+      "center_of_mass_m": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "inertia_kg_m2": [
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.79709,
+        0.0,
+        0.0,
+        0.0,
+        0.00627
+      ],
+      "principal_inertia_kg_m2": [
+        0.79709,
+        0.79709,
+        0.00627
+      ]
+    },
+    "mesh_metrics": {
+      "status": "OK",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_047/rev_047.msh",
+      "volumes": 1,
+      "surfaces": 3,
+      "curves": 3,
+      "points": 2,
+      "bounding_box_m": {
+        "xmin": -0.10000010000000001,
+        "ymin": -0.10000010000000001,
+        "zmin": -1e-07,
+        "xmax": 0.10000010000000001,
+        "ymax": 0.10000010000000001,
+        "zmax": 1.0000001
+      },
+      "dimensions_m": {
+        "dx": 0.20000020000000002,
+        "dy": 0.20000020000000002,
+        "dz": 1.0000002000000001
+      },
+      "node_count": 99,
+      "tet_count": 228,
+      "min_quality": 0.30452566727436475,
+      "mean_quality": 0.8383144044262031
+    },
+    "fea_metrics": {
+      "status": "OK",
+      "solver_mode": "analytical_nasa_sp8007",
+      "peak_von_mises_pa": 117598545.3,
+      "peak_von_mises_mpa": 117.6,
+      "sigma_axial_mpa": 3.34,
+      "sigma_hoop_mpa": 119.23,
+      "yield_strength_mpa": 276.0,
+      "yield_fos": 2.35,
+      "fos": 2.35,
+      "blf": 1166.94,
+      "buckling_load_factor_blf": 1166.94,
+      "stress_passed": true,
+      "buckling_passed": true
+    },
+    "cfd_metrics": {
+      "status": "SKIPPED_FAST_MODE",
+      "solver_mode": "baseline_subsonic",
+      "note": "Use fidelity='full' to trigger Gmsh CFD farfield mesh, CalculiX .inp FEA, and SU2 Mach sweep."
+    },
+    "flight_metrics": {
+      "status": "OK",
+      "apogee_m": 3183.6,
+      "max_velocity_ms": 304.1,
+      "max_mach": 0.91,
+      "max_acceleration_ms2": 92.7,
+      "max_dynamic_pressure_pa": 46835.6,
+      "flight_time_s": 167.1,
+      "rail_exit_velocity_ms": 30.6,
+      "stage_events": [
+        {
+          "stage": 1,
+          "burnout_time_s": 3.5,
+          "burnout_altitude_m": 550.7,
+          "burnout_velocity_ms": 303.4
+        }
+      ],
+      "static_margin_calibers": {
+        "rail_departure": 5.45,
+        "burnout": 6.05,
+        "min_margin": 5.45,
+        "mode": "passive_aerodynamic"
+      },
+      "recovery": {
+        "dual_deploy_enabled": true,
+        "drogue_deployed": true,
+        "main_deployed": true
+      }
+    },
+    "artifacts": {
+      "step_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_047/rev_047.step",
+      "msh_path": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_047/rev_047.msh",
+      "rev_dir": "/Users/tarunprakash/Documents/GitHub/Goddard/designs/rev_047"
+    }
   }
 ]

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import pathlib
 import sys
 
 from goddard import __version__
@@ -148,6 +149,50 @@ def _cmd_mcp(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_export(args: argparse.Namespace) -> int:
+    from goddard.ui.app import build_revision_bundle_zip, list_revisions
+
+    rev_id_str = args.design_id
+    if rev_id_str is None:
+        revs = list_revisions()
+        if not revs:
+            print("Error: No revisions found in design ledger.", file=sys.stderr)
+            return 1
+        rev_id = revs[-1].get("revision_id", 1)
+    else:
+        clean_str = str(rev_id_str).lower().replace("rev_", "").replace("rev", "")
+        try:
+            rev_id = int(clean_str)
+        except ValueError:
+            print(
+                f"Error: Invalid revision ID '{rev_id_str}'. Must be an integer or like 'rev_001'.",
+                file=sys.stderr,
+            )
+            return 1
+
+    try:
+        zip_bytes = build_revision_bundle_zip(rev_id)
+    except Exception as e:
+        detail = getattr(e, "detail", str(e))
+        print(f"Error exporting revision {rev_id}: {detail}", file=sys.stderr)
+        return 1
+
+    out_path = (
+        pathlib.Path(args.output)
+        if args.output
+        else pathlib.Path.cwd() / f"Goddard_Rev_{rev_id:03d}_Engineering_Package.zip"
+    )
+    if out_path.is_dir():
+        out_path = out_path / f"Goddard_Rev_{rev_id:03d}_Engineering_Package.zip"
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_bytes(zip_bytes)
+    print(
+        f"[*] Exported revision {rev_id} bundle to {out_path.resolve()} ({len(zip_bytes) / 1024:.1f} KB)"
+    )
+    return 0
+
+
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="goddard",
@@ -222,6 +267,23 @@ def create_parser() -> argparse.ArgumentParser:
     # goddard mcp
     subparsers.add_parser("mcp", help="Run the Goddard FastMCP server")
 
+    # goddard export
+    export_p = subparsers.add_parser("export", help="Export complete design bundle ZIP package")
+    export_p.add_argument(
+        "--design-id",
+        "--rev-id",
+        "-r",
+        dest="design_id",
+        default=None,
+        help="Revision ID to export (e.g. rev_001 or 1)",
+    )
+    export_p.add_argument(
+        "--output",
+        "-o",
+        default=None,
+        help="Output destination ZIP path",
+    )
+
     return parser
 
 
@@ -238,6 +300,7 @@ def main() -> None:
         "size": _cmd_size,
         "serve": _cmd_serve,
         "mcp": _cmd_mcp,
+        "export": _cmd_export,
     }
 
     handler = handlers.get(args.command)

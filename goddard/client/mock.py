@@ -195,11 +195,29 @@ class MockOnshapeClient:
 
     BASE_URL = "https://mock.cad.onshape.com/api/v6"
 
-    def __init__(self, access_key: str = "mock_access", secret_key: str = "mock_secret"):
+    def __init__(
+        self,
+        access_key: str = "mock_access",
+        secret_key: str = "mock_secret",
+        base_url: str = "https://mock.cad.onshape.com/api/v6",
+        *args: Any,
+        **kwargs: Any,
+    ):
         self.access_key = access_key
         self.secret_key = secret_key
+        self.base_url = base_url
         self._created_features: list[dict[str, Any]] = []
         self._feature_studios: dict[str, str] = {"mock_fs_eid_001": "GoddardRocketFS"}
+
+    # ── High-Level Parity Methods ────────────────────────────────────────────
+
+    def get_session_info(self) -> dict[str, Any]:
+        """Return mock session info for method parity with OnshapeClient."""
+        return self.get("/users/sessioninfo").json()
+
+    def get_document(self, did: str) -> dict[str, Any]:
+        """Return mock document metadata for method parity with OnshapeClient."""
+        return {"id": did, "name": "Mock Rocket Document"}
 
     # ── Low-Level Mock REST Interface ────────────────────────────────────────
 
@@ -214,6 +232,11 @@ class MockOnshapeClient:
                     }
                 ]
             )
+        if "/documents" in path:
+            did = (
+                path.split("/documents/")[-1].split("/")[0] if "/documents/" in path else "mock_doc"
+            )
+            return MockResponse({"id": did, "name": "Mock Rocket Document"})
         if "/sessioninfo" in path:
             return MockResponse({"id": "mock_user", "name": "Mock User", "state": 1})
         if "/featurespecs" in path:
@@ -387,10 +410,14 @@ class MockOnshapeClient:
         did: str = "",
         wid: str = "",
         part_eid: str = "",
+        eid: str = "",
         body_radius_m: float = 0.0635,
         length_m: float = 1.75,
+        **kwargs: Any,
     ) -> dict[str, Any]:
         """Deterministic bounding box metrics."""
+        eid = eid or part_eid
+        _ = (did, wid, eid, kwargs)
         return {
             "xmin": -body_radius_m,
             "xmax": body_radius_m,
@@ -430,6 +457,10 @@ class MockOnshapeClient:
 
     def download_external_data(self, did: str = "", foreign_id: str = "") -> bytes:
         return MINIMAL_STEP_STRING.encode("utf-8")
+
+    def export_step_string(self, *args: Any, **kwargs: Any) -> str:
+        """Return AP214 STEP representation as string."""
+        return MINIMAL_STEP_STRING
 
     def export_step(
         self,
